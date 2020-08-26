@@ -1,0 +1,25 @@
+{
+  "name": "tor-interactive",
+  "version": "1.0.0",
+  "description": "The Transparency of Randomness - Interactive module",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MathiasGartner/TOR-Interactive.git"
+  },
+  "author": "Mathias Gartner & Vera Tolazzi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MathiasGartner/TOR-Interactive/issues"
+  },
+  "homepage": "https://github.com/MathiasGartner/TOR-Interactive#readme"
+}

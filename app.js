@@ -1,26 +1,28 @@
 var config = require('./config');
-var configPrivate = require('./configPrivate');
 let express = require('express');
+let bodyParser = require("body-parser");
 let app = express();
-var http = require('http');
-var mysql = require('mysql');
+//var http = require('http');
 
-var dbConn = mysql.createConnection({
-    host: configPrivate.DB_HOST,
-    user: configPrivate.DB_USER,
-    password: configPrivate.DB_PASSWORD,
-    database: configPrivate.DB_NAME
-});
-  
-dbConn.connect(function(err) {
-    if (err) throw err;
-    console.log("Connected to DB server!");
-});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }))
 
+require("./app/routes/box.routes.js")(app);
+
+/*
 http.createServer(function (req, res) {
 	console.log(req.httpVersion + '\n');
     res.writeHead(200, {'Content-Type': 'text/plain'});
     res.end('Hello World\n');
-}).listen(config.port, "0.0.0.0");
+}).listen(config.port, "0.0.0.0");*/
+
+app.get('/', function(req, res) {
+    res.sendFile("index.html", { root: __dirname });
+});
+
+// set port, listen for requests
+app.listen(80, () => {
+    console.log("Server is running on port 3000.");
+});
 
 console.log('Server running at http://0.0.0.0:' + config.port + '/');

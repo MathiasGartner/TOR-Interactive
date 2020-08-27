@@ -1,8 +1,11 @@
 var config = require('./config');
 let express = require('express');
+let path = require('path');
 let bodyParser = require("body-parser");
 let app = express();
 //var http = require('http');
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -17,7 +20,8 @@ http.createServer(function (req, res) {
 }).listen(config.port, "0.0.0.0");*/
 
 app.get('/', function(req, res) {
-    res.sendFile("index.html", { root: __dirname });
+    //res.sendFile("index.html", { root: __dirname });
+    res.redirect('index.html');
 });
 
 // set port, listen for requests

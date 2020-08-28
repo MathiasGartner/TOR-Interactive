@@ -20,7 +20,8 @@
         var torApp = angular.module('TOR-Interactive', []);
         torApp.controller('TORController', function ($scope, $http) {
             $http.get(apiUrl + 'boxes').then(function (data) {
-                $scope.boxes = data.data.slice(0, 8);
+                //$scope.boxes = data.data.slice(0, 8);
+                $scope.boxes = data.data;
                 $scope.boxes.forEach(b => {
                     b.isSelected = false;
                 });
@@ -68,21 +69,21 @@
     <div id="boxOverview">
         <div class="mdc-layout-grid">
             <div class="mdc-layout-grid__inner">
-                <div class="mdc-layout-grid__cell mdc-layout-grid--align-right" ng-repeat="box in boxes" ng-click="selectBox(box)">
+                <div class="mdc-layout-grid__cell 
+                            mdc-layout-grid__cell--span-2-desktop
+                            mdc-layout-grid__cell--span-4-tablet
+                            mdc-layout-grid__cell--span-6-phone" ng-repeat="box in boxes" ng-click="selectBox(box)">
                     <div class="mdc-card"
-                        ng-class="{'box-available': box.AllowUserMode == 1 && !box.isSelected, 
+                        ng-class="{'box-available': box.AllowUserMode == 1 && !box.isSelected && !box.UserModeActive == 1, 
                                    'box-disabled': box.AllowUserMode != 1 || box.UserModeActive == 1, 
                                    'box-selected': box.isSelected}">
-                        <section class="mdc-card__header">
+                        <div class="mdc-card__header">
                             <div>
                                 <p class="mdc-card__title">{{box.Material}}</p>
                             </div>
-                        </section>
-                        <section class="mdc-card__media--square">
-                            <div class="material-image" width="262" height="262">
-                                <img src="assets/{{box.Material}}.png">
-                            </div>
-                        </section>
+                        </div>
+                        <div class="mdc-card__media--square" style="background-image: url('assets/{{box.Material}}.png');"><div style="min-height:200px"></div>
+                        </div>
                     </div>
                 </div>
             </div>

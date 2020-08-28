@@ -21,3 +21,7 @@
 .box-available {
     background-color: #8ff5c6;
 }
+
+.mdc-layout-grid__inner .mdc-layout-grid__inner .mdc-layout-grid__inner {       
+    grid-gap: 0px;                                                                
+}    

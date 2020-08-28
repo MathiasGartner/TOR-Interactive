@@ -349,20 +349,64 @@
   --mdc-theme-secondary: #8ff5c6;
 }
 
-.box-selected {
+.box-available {
   background-color: #a32db3;
 }
 
 .box-disabled {
-  background-color: #101112;
+  background-color: #909090;
 }
 
-.box-available {
+.box-selected {
   background-color: #8ff5c6;
 }
 
 .mdc-layout-grid__inner .mdc-layout-grid__inner .mdc-layout-grid__inner {
   grid-gap: 0px;
+}
+
+.box-button-start {
+  position: fixed;
+  bottom: 20;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.move-button-ready {
+  position: fixed;
+  bottom: 20;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.move-button-cancel {
+  position: fixed;
+  top: 20;
+  right: 20;
+}
+
+.roll-button-start {
+  position: fixed;
+  bottom: 20;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.congrats-button-restart {
+  position: fixed;
+  bottom: 20;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.mdc-layout-grid__cell {
+  cursor: pointer;
+}
+
+.box-card-image {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 /*# sourceMappingURL=style.css.map */

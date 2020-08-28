@@ -19,7 +19,7 @@ exports.findOne = (req, res) => {
         if (err) {
           if (err.kind === "not_found") {
             res.status(404).send({
-              message: `Could not find Box with id ${req.params.boxId}.`
+              message: "Could not find Box with id " + req.params.boxId
             });
           } else {
             res.status(500).send({

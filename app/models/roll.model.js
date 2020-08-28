@@ -6,6 +6,26 @@ const Roll = function (boxId, dropoffPosition) {
   this.dropoffPosition = dropoffPosition;
 };
 
+Roll.getLastResult = (boxId, result) => {
+  sql.query('SELECT Result FROM diceresult WHERE ClientId = ? AND Time > DATE_SUB(NOW(), INTERVAL 10 SECOND) ORDER BY Id DESC LIMIT 1',
+            [boxId],
+            (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (res.length) {
+      console.log("roll result: ", res[0]);
+      result(null, res[0]);
+      return;
+    }
+
+    result({ kind: "not_found" }, null);
+  });
+};
+
 Roll.rollTheDice = (roll, result) => {
   console.log(roll.boxId);
   console.log(roll.dropoffPosition);

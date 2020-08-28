@@ -73,7 +73,7 @@
 
             $interval(function () {
                 if (waitForRollFinish) {
-                    $scope.getRollResult();
+                    $scope.getRollResult(selectedBox.Id);
                 }
             }, refreshTime);
 
@@ -140,7 +140,7 @@
             $scope.rollDie = function (dropoffPosition) {
                 $http
                     .put(apiUrl + 'roll/' + selectedBox.Id, { "dropoffPosition": dropoffPosition })
-                    .next(function () {
+                    .then(function (response) {
                         $('#rollControls').fadeOut(fadeInOutTime, function () {
                             $('#waitForRoll').fadeIn(fadeInOutTime);
                             waitForRollFinish = true;
@@ -335,6 +335,7 @@
         </button>
     </div>
     <div id="waitForRoll">
+        <h1>Waiting for your result...</h1>
         <div style="display: flex; justify-content: center; align-items: center;">
             <img src="assets/Ripple-1.1s-197px.svg">
         </div>

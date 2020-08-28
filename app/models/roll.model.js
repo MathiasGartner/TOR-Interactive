@@ -7,7 +7,7 @@ const Roll = function (boxId, dropoffPosition) {
 };
 
 Roll.getLastResult = (boxId, result) => {
-  sql.query('SELECT Result FROM diceresult WHERE ClientId = ? AND Time > DATE_SUB(NOW(), INTERVAL 10 SECOND) ORDER BY Id DESC LIMIT 1',
+  sql.query('SELECT IFNULL( (SELECT Result FROM diceresult WHERE ClientId = ? AND Time > DATE_SUB(NOW(), INTERVAL 10 SECOND) ORDER BY Id DESC LIMIT 1), -1) AS Result',
             [boxId],
             (err, res) => {
     if (err) {

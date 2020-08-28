@@ -14,7 +14,37 @@
         crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
     <script>
-        var apiUrl = 'http://193.171.203.63/'
+        var userLang = navigator.language || navigator.userLanguage;                
+        var texts_en = {
+            "select-a-box": "Select your Box",
+            "box-already-in-use": "Box already in use by another visitor. Please choose another one.",
+            "before-start-pick": "Before you start to roll the dice, you have to pick it up.",
+            "before-start-magnet": "Now you have control over the magnet.",
+            "ready-to-roll": "Ready to roll!",
+            "choose-roll-position": "Choose where to roll the die!",
+            "roll-position-left": "on the LEFT side:",
+            "roll-position-right": "or on the RIGHT side:",
+            "roll-the-die": "Roll the die!",
+            "wait-for-result": "Waiting for your result...",
+            "great-result": "Great, you rolled a",
+            "choose-another-box": "Choose another box!",
+        };
+        var texts_de = {
+            "select-a-box": "Wähle deine Box",
+            "box-already-in-use": "Die Box wird bereits von einem anderen Besucher verwendet. Bitte wähle eine andere.",
+            "before-start-pick": "Bevor du würfeln kannst musst du den Würfel aufheben.",
+            "before-start-magnet": "Du hast jetzt die Kontrolle über den Magneten.",
+            "ready-to-roll": "Bereit zum Würfeln!",
+            "choose-roll-position": "Wähle den Abwurfort!",
+            "roll-position-left": "auf der linken Seite:",
+            "roll-position-right": "oder auf der rechten Seite:",
+            "roll-the-die": "Würfle!",
+            "wait-for-result": "Warte auf das Ergebnis...",
+            "great-result": "Great, you rolled a",
+            "choose-another-box": "Wähle eine andere Box!",
+        };
+        //var apiUrl = "http://193.171.203.63/";
+        var apiUrl = "";
         var isInUserMode = false;
         var selectedBox;
         var fadeInOutTime = 750;
@@ -35,11 +65,19 @@
 
         var torApp = angular.module('TOR-Interactive', []);
         torApp.controller('TORController', function ($scope, $http, $interval) {
+
+            if (userLang.startsWith('de')) {
+                $scope.texts = texts_de;
+            }
+            else {
+                $scope.texts = texts_en;
+            }
+
             $scope.showStartButton = false;
 
             $scope.getRollResult = function(boxId) {
                 $http.get(apiUrl + 'roll/' + boxId).then(function (data) {
-                    $scope.rollResult = data.data;
+                    $scope.rollResult = data.data.Result;
                     if ($scope.rollResult > 0) {
                         $('#waitForRoll').fadeOut(fadeInOutTime, function () {
                             $('#congrats').fadeIn(fadeInOutTime);
@@ -84,7 +122,7 @@
                     });
                     box.isSelected = true;
                     selectedBox = box;
-                    console.log("select box: " + box.Material);
+                    console.log("select box: " + box.Latin);
                     $scope.showStartButton = true;
                 }
             };
@@ -115,7 +153,6 @@
             };
 
             $scope.restart = function () {
-                alert("restart");
                 $('#moveControls, #rollControls, #waitForRoll, #congrats').fadeOut(fadeInOutTime, function () {
                     isInUserMode = false;
                     $scope.showStartButton = false;
@@ -151,9 +188,9 @@
     </script>
 </head>
 
-<body class="mdc-typography" ng-controller="TORController">
+<body class="mdc-typography" ng-controller="TORController" ng-cloak>
     <div id="boxOverview">
-        <h1>Select your Dice</h1>
+        <h1>{{texts["select-a-box"]}}</h1>
         <div class="mdc-layout-grid">
             <div class="mdc-layout-grid__inner">
                 <div class="mdc-layout-grid__cell 
@@ -165,11 +202,11 @@
                                    'box-selected': box.isSelected}">
                         <div class="mdc-card__header">
                             <div>
-                                <p class="mdc-card__title">{{box.Material}}</p>
+                                <p class="mdc-card__title">{{box.Latin}}</p>
                             </div>
                         </div>
                         <div class="mdc-card__media--square box-card-image"
-                            style="background-image: url('assets/{{box.Material}}.png');">
+                            style="background-image: url('assets/{{box.Latin}}.png');">
                             <div style="min-height:200px"></div>
                         </div>
                     </div>
@@ -184,14 +221,14 @@
         <div id="mdc-snackbar-already-in-use" class="mdc-snackbar">
             <div class="mdc-snackbar__surface">
                 <div class="mdc-snackbar__label" role="status" aria-live="polite">
-                    Box already in use by another user. Please choose another one.
+                    {{texts["box-already-in-use"]}}
                 </div>
             </div>
         </div>
     </div>
     <div id="moveControls">
-        <h2>Before you start to roll the dice, you have to pick it up.</h2>
-        <h2>Now you have control over the magnet.</h2>
+        <h2>{{texts["before-start-pick"]}}</h2>
+        <h2>{{texts["before-start-magnet"]}}</h2>
         <div style="width: 90%; max-width: 700px;">
             <div style="width: 60%; margin: auto; float: left;">
                 <div style="width: 100%;">
@@ -264,7 +301,7 @@
         </div>
         <button class="mdc-fab mdc-fab--extended move-button-ready" ng-click="switchToRollMode()">
             <div class="mdc-fab__ripple"></div>
-            <span class="mdc-fab__label">Ready to roll!</span>
+            <span class="mdc-fab__label">{{texts["ready-to-roll"]}}</span>
         </button>
         <button class="mdc-fab mdc-fab--extended move-button-cancel" ng-click="restart()">
             <div class="mdc-fab__ripple"></div>
@@ -273,8 +310,8 @@
         </button>
     </div>
     <div id="rollControls" style="width: 85%; max-width: 700px; margin: auto;">
-        <h2>Choose where to roll the die!</h2>
-        <h2>on the LEFT side:</h2>
+        <h2>{{texts["choose-roll-position"]}}</h2>
+        <h2>{{texts["roll-position-left"]}}</h2>
         <div id="rollControlsLeft" style="width: 100%">
             <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"
                 aria-disabled="false" aria-label="Select Value">
@@ -301,7 +338,7 @@
                 </div>
             </div>
         </div>
-        <h2>or on the RIGHT side:</h2>
+        <h2>{{texts["roll-position-right"]}}</h2>
         <div id="rollControlsRight" style="width: 100%">
             <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"
                 aria-disabled="true" aria-label="Select Value">
@@ -331,20 +368,20 @@
         </div>
         <button class="mdc-fab mdc-fab--extended roll-button-start" ng-click="rollDie()">
             <div class="mdc-fab__ripple"></div>
-            <span class="mdc-fab__label">Roll the die!</span>
+            <span class="mdc-fab__label">{{texts["roll-the-die"]}}</span>
         </button>
     </div>
     <div id="waitForRoll">
-        <h1>Waiting for your result...</h1>
+        <h1>{{texts["wait-for-result"]}}</h1>
         <div style="display: flex; justify-content: center; align-items: center;">
             <img src="assets/Ripple-1.1s-197px.svg">
         </div>
     </div>
     <div id="congrats">
-        <h2>Great, you rolled a {{diceResult}}!</h2>
+        <h2>{{texts["great-result"]}} {{rollResult}}!</h2>
         <button class="mdc-fab mdc-fab--extended congrats-button-restart" ng-click="restart()">
             <div class="mdc-fab__ripple"></div>
-            <span class="mdc-fab__label">Choose another box!</span>
+            <span class="mdc-fab__label">{{texts["choose-another-box"]}}</span>
         </button>
     </div>
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
@@ -355,16 +392,20 @@
             mdc.ripple.MDCRipple.attachTo(button);
         }
 
-        var snackAlreadyInUse = mdc.snackbar.MDCSnackbar.attachTo(document.querySelector('#mdc-snackbar-already-in-use'));
+        setTimeout(()=> {
+            var sliders = document.querySelectorAll('.mdc-slider');
+            for (var i = 0, sliders; slider = sliders[i]; i++) {
+                mdc.slider.MDCSlider.attachTo(slider);
+            }
+            setTimeout(()=> {
+                $('#rollControls').hide();
+            }, 300);
+        }, 300);
 
-        var sliders = document.querySelectorAll('.mdc-slider');
-        for (var i = 0, sliders; slider = sliders[i]; i++) {
-            mdc.slider.MDCSlider.attachTo(slider);
-        }
+        var snackAlreadyInUse = mdc.snackbar.MDCSnackbar.attachTo(document.querySelector('#mdc-snackbar-already-in-use'));
 
         //$('#boxOverview').hide();
         $('#moveControls').hide();
-        $('#rollControls').hide();
         $('#waitForRoll').hide();
         $('#congrats').hide();
     </script>

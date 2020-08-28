@@ -3,18 +3,18 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TOR-Interactive</title>
 
     <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
         integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
         crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
     <script>
-        var userLang = navigator.language || navigator.userLanguage;                
+        var userLang = navigator.language || navigator.userLanguage;
         var texts_en = {
             "select-a-box": "Select your Box",
             "box-already-in-use": "Box already in use by another visitor. Please choose another one.",
@@ -43,8 +43,8 @@
             "great-result": "Great, you rolled a",
             "choose-another-box": "Wähle eine andere Box!",
         };
-        //var apiUrl = "http://193.171.203.63/";
-        var apiUrl = "";
+        var apiUrl = "http://193.171.203.63/";
+        //var apiUrl = "";
         var isInUserMode = false;
         var selectedBox;
         var fadeInOutTime = 750;
@@ -75,7 +75,7 @@
 
             $scope.showStartButton = false;
 
-            $scope.getRollResult = function(boxId) {
+            $scope.getRollResult = function (boxId) {
                 $http.get(apiUrl + 'roll/' + boxId).then(function (data) {
                     $scope.rollResult = data.data.Result;
                     if ($scope.rollResult > 0) {
@@ -189,200 +189,207 @@
 </head>
 
 <body class="mdc-typography" ng-controller="TORController" ng-cloak>
-    <div id="boxOverview">
-        <h1>{{texts["select-a-box"]}}</h1>
-        <div class="mdc-layout-grid">
-            <div class="mdc-layout-grid__inner">
-                <div class="mdc-layout-grid__cell 
-                            mdc-layout-grid__cell--span-3-desktop
+    <div style="max-width: 800px; margin: auto">
+        <div id="boxOverview">
+            <h1>{{texts["select-a-box"]}}</h1>
+            <div class="mdc-layout-grid">
+                <div class="mdc-layout-grid__inner">
+                    <div class="mdc-layout-grid__cell 
+                            mdc-layout-grid__cell--span-4-desktop
                             mdc-layout-grid__cell--span-4-tablet
                             mdc-layout-grid__cell--span-6-phone" ng-repeat="box in boxes" ng-click="selectBox(box)">
-                    <div class="mdc-card" ng-class="{'box-available': box.AllowUserMode == 1 && !box.isSelected && !box.UserModeActive == 1, 
+                        <div class="mdc-card" ng-class="{'box-available': box.AllowUserMode == 1 && !box.isSelected && !box.UserModeActive == 1, 
                                    'box-disabled': box.AllowUserMode != 1 || box.UserModeActive == 1, 
                                    'box-selected': box.isSelected}">
-                        <div class="mdc-card__header">
-                            <div>
-                                <p class="mdc-card__title">{{box.Latin}}</p>
+                            <div class="mdc-card__header">
+                                <div>
+                                    <p class="mdc-card__title">{{box.Latin}}</p>
+                                </div>
+                            </div>
+                            <div class="mdc-card__media--square box-card-image"
+                                style="background-image: url('assets/{{box.Latin}}.png');">
+                                <div style="min-height:150px"></div>
                             </div>
                         </div>
-                        <div class="mdc-card__media--square box-card-image"
-                            style="background-image: url('assets/{{box.Latin}}.png');">
-                            <div style="min-height:200px"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="mdc-fab mdc-fab--extended box-button-start" ng-show="showStartButton"
+                ng-click="switchToUserMode()">
+                <div class="mdc-fab__ripple"></div>
+                <span class="mdc-fab__label">Start</span>
+            </button>
+            <div id="mdc-snackbar-already-in-use" class="mdc-snackbar">
+                <div class="mdc-snackbar__surface">
+                    <div class="mdc-snackbar__label" role="status" aria-live="polite">
+                        {{texts["box-already-in-use"]}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="moveControls">
+            <h2>{{texts["before-start-pick"]}}</h2>
+            <h2>{{texts["before-start-magnet"]}}</h2>
+            <div style="width: 90%; max-width: 700px;">
+                <div style="width: 60%; margin: auto; float: left;">
+                    <div style="width: 100%;">
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <button class="mdc-button mdc-button--raised control-button control-button-front"
+                                ng-click="sendMoveCommand('FRONT')">
+                                <div class="mdc-button__ripple"></div>
+                                <i class="material-icons mdc-button__icon" aria-hidden="true">
+                                    arrow_drop_up</i>
+                            </button>
+                        </div>
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <button class="mdc-button mdc-button--raised control-button control-button-left"
+                                ng-click="sendMoveCommand('LEFT')">
+                                <div class="mdc-button__ripple"></div>
+                                <i class="material-icons mdc-button__icon" aria-hidden="true">
+                                    keyboard_arrow_left</i>
+                            </button>
+                            <button class="mdc-button mdc-button--raised control-button control-button-dummy"
+                                style="visibility: hidden;">
+                            </button>
+                            <button class="mdc-button mdc-button--raised control-button control-button-right"
+                                ng-click="sendMoveCommand('RIGHT')">
+                                <div class="mdc-button__ripple"></div>
+                                <i class="material-icons mdc-button__icon" aria-hidden="true">
+                                    keyboard_arrow_right</i>
+                            </button>
+                        </div>
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <button class="mdc-button mdc-button--raised control-button control-button-back"
+                                ng-click="sendMoveCommand('BACK')">
+                                <div class="mdc-button__ripple"></div>
+                                <i class="material-icons mdc-button__icon" aria-hidden="true">
+                                    keyboard_arrow_down</i>
+                            </button>
                         </div>
                     </div>
+                    <div>
+                        illu here
+                    </div>
+                </div>
+                <div style="width: 30%; margin: auto; float: left;">
+                    <div style="width: 100%;">
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <button class="mdc-button mdc-button--raised control-button control-button-up"
+                                ng-click="sendMoveCommand('UP')">
+                                <div class="mdc-button__ripple"></div>
+                                <i class="material-icons mdc-button__icon" aria-hidden="true">
+                                    keyboard_arrow_up</i>
+                            </button>
+                        </div>
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <button class="mdc-button mdc-button--raised control-button control-button-dummy"
+                                style="visibility: hidden;">
+                            </button>
+                        </div>
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <button class="mdc-button mdc-button--raised control-button control-button-down"
+                                ng-click="sendMoveCommand('DOWN')">
+                                <div class="mdc-button__ripple"></div>
+                                <i class="material-icons mdc-button__icon" aria-hidden="true">
+                                    keyboard_arrow_down</i>
+                            </button>
+                        </div>
+                    </div>
+                    <div>
+                        illu 2 here
+                    </div>
                 </div>
             </div>
+            <button class="mdc-fab mdc-fab--extended move-button-ready" ng-click="switchToRollMode()">
+                <div class="mdc-fab__ripple"></div>
+                <span class="mdc-fab__label">{{texts["ready-to-roll"]}}</span>
+            </button>
+            <button class="mdc-fab mdc-fab--extended move-button-cancel" ng-click="restart()">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-button__icon" aria-hidden="true">
+                    close</i>
+            </button>
         </div>
-        <button class="mdc-fab mdc-fab--extended box-button-start" ng-show="showStartButton"
-            ng-click="switchToUserMode()">
-            <div class="mdc-fab__ripple"></div>
-            <span class="mdc-fab__label">Start</span>
-        </button>
-        <div id="mdc-snackbar-already-in-use" class="mdc-snackbar">
-            <div class="mdc-snackbar__surface">
-                <div class="mdc-snackbar__label" role="status" aria-live="polite">
-                    {{texts["box-already-in-use"]}}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div id="moveControls">
-        <h2>{{texts["before-start-pick"]}}</h2>
-        <h2>{{texts["before-start-magnet"]}}</h2>
-        <div style="width: 90%; max-width: 700px;">
-            <div style="width: 60%; margin: auto; float: left;">
-                <div style="width: 100%;">
-                    <div style="display: flex; justify-content: center; align-items: center;">
-                        <button class="mdc-button mdc-button--raised control-button control-button-front"
-                            ng-click="sendMoveCommand('FRONT')">
-                            <div class="mdc-button__ripple"></div>
-                            <i class="material-icons mdc-button__icon" aria-hidden="true">
-                                arrow_drop_up</i>
-                        </button>
+        <div id="rollControls" style="width: 85%; max-width: 700px; margin: auto;">
+            <h2>{{texts["choose-roll-position"]}}</h2>
+            <h2>{{texts["roll-position-left"]}}</h2>
+            <div id="rollControlsLeft" style="width: 100%">
+                <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100"
+                    aria-valuenow="50" aria-disabled="false" aria-label="Select Value">
+                    <div class="mdc-slider__track-container">
+                        <div class="mdc-slider__track"></div>
                     </div>
-                    <div style="display: flex; justify-content: center; align-items: center;">
-                        <button class="mdc-button mdc-button--raised control-button control-button-left"
-                            ng-click="sendMoveCommand('LEFT')">
-                            <div class="mdc-button__ripple"></div>
-                            <i class="material-icons mdc-button__icon" aria-hidden="true">
-                                keyboard_arrow_left</i>
-                        </button>
-                        <button class="mdc-button mdc-button--raised control-button control-button-dummy"
-                            style="visibility: hidden;">
-                        </button>
-                        <button class="mdc-button mdc-button--raised control-button control-button-right"
-                            ng-click="sendMoveCommand('RIGHT')">
-                            <div class="mdc-button__ripple"></div>
-                            <i class="material-icons mdc-button__icon" aria-hidden="true">
-                                keyboard_arrow_right</i>
-                        </button>
-                    </div>
-                    <div style="display: flex; justify-content: center; align-items: center;">
-                        <button class="mdc-button mdc-button--raised control-button control-button-back"
-                            ng-click="sendMoveCommand('BACK')">
-                            <div class="mdc-button__ripple"></div>
-                            <i class="material-icons mdc-button__icon" aria-hidden="true">
-                                keyboard_arrow_down</i>
-                        </button>
+                    <div class="mdc-slider__thumb-container">
+                        <svg class="mdc-slider__thumb" width="21" height="21">
+                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                        </svg>
+                        <div class="mdc-slider__focus-ring"></div>
                     </div>
                 </div>
-                <div>
-                    illu here
-                </div>
-            </div>
-            <div style="width: 30%; margin: auto; float: left;">
-                <div style="width: 100%;">
-                    <div style="display: flex; justify-content: center; align-items: center;">
-                        <button class="mdc-button mdc-button--raised control-button control-button-up"
-                            ng-click="sendMoveCommand('UP')">
-                            <div class="mdc-button__ripple"></div>
-                            <i class="material-icons mdc-button__icon" aria-hidden="true">
-                                keyboard_arrow_up</i>
-                        </button>
+                <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100"
+                    aria-valuenow="50" aria-disabled="false" aria-label="Select Value">
+                    <div class="mdc-slider__track-container">
+                        <div class="mdc-slider__track"></div>
                     </div>
-                    <div style="display: flex; justify-content: center; align-items: center;">
-                        <button class="mdc-button mdc-button--raised control-button control-button-dummy"
-                            style="visibility: hidden;">
-                        </button>
-                    </div>
-                    <div style="display: flex; justify-content: center; align-items: center;">
-                        <button class="mdc-button mdc-button--raised control-button control-button-down"
-                            ng-click="sendMoveCommand('DOWN')">
-                            <div class="mdc-button__ripple"></div>
-                            <i class="material-icons mdc-button__icon" aria-hidden="true">
-                                keyboard_arrow_down</i>
-                        </button>
+                    <div class="mdc-slider__thumb-container">
+                        <svg class="mdc-slider__thumb" width="21" height="21">
+                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                        </svg>
+                        <div class="mdc-slider__focus-ring"></div>
                     </div>
                 </div>
-                <div>
-                    illu 2 here
-                </div>
             </div>
-        </div>
-        <button class="mdc-fab mdc-fab--extended move-button-ready" ng-click="switchToRollMode()">
-            <div class="mdc-fab__ripple"></div>
-            <span class="mdc-fab__label">{{texts["ready-to-roll"]}}</span>
-        </button>
-        <button class="mdc-fab mdc-fab--extended move-button-cancel" ng-click="restart()">
-            <div class="mdc-fab__ripple"></div>
-            <i class="material-icons mdc-button__icon" aria-hidden="true">
-                close</i>
-        </button>
-    </div>
-    <div id="rollControls" style="width: 85%; max-width: 700px; margin: auto;">
-        <h2>{{texts["choose-roll-position"]}}</h2>
-        <h2>{{texts["roll-position-left"]}}</h2>
-        <div id="rollControlsLeft" style="width: 100%">
-            <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"
-                aria-disabled="false" aria-label="Select Value">
-                <div class="mdc-slider__track-container">
-                    <div class="mdc-slider__track"></div>
+            <h2>{{texts["roll-position-right"]}}</h2>
+            <div id="rollControlsRight" style="width: 100%">
+                <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100"
+                    aria-valuenow="50" aria-disabled="true" aria-label="Select Value">
+                    <div class="mdc-slider__track-container">
+                        <div class="mdc-slider__track"></div>
+                    </div>
+                    <div class="mdc-slider__thumb-container">
+                        <svg class="mdc-slider__thumb" width="21" height="21">
+                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                        </svg>
+                        <div class="mdc-slider__focus-ring"></div>
+                    </div>
                 </div>
-                <div class="mdc-slider__thumb-container">
-                    <svg class="mdc-slider__thumb" width="21" height="21">
-                        <circle cx="10.5" cy="10.5" r="7.875"></circle>
-                    </svg>
-                    <div class="mdc-slider__focus-ring"></div>
+                <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100"
+                    aria-valuenow="50" aria-disabled="true" aria-label="Select Value">
+                    <div class="mdc-slider__track-container">
+                        <div class="mdc-slider__track"></div>
+                    </div>
+                    <div class="mdc-slider__thumb-container">
+                        <svg class="mdc-slider__thumb" width="21" height="21">
+                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
+                        </svg>
+                        <div class="mdc-slider__focus-ring"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"
-                aria-disabled="false" aria-label="Select Value">
-                <div class="mdc-slider__track-container">
-                    <div class="mdc-slider__track"></div>
-                </div>
-                <div class="mdc-slider__thumb-container">
-                    <svg class="mdc-slider__thumb" width="21" height="21">
-                        <circle cx="10.5" cy="10.5" r="7.875"></circle>
-                    </svg>
-                    <div class="mdc-slider__focus-ring"></div>
-                </div>
-            </div>
-        </div>
-        <h2>{{texts["roll-position-right"]}}</h2>
-        <div id="rollControlsRight" style="width: 100%">
-            <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"
-                aria-disabled="true" aria-label="Select Value">
-                <div class="mdc-slider__track-container">
-                    <div class="mdc-slider__track"></div>
-                </div>
-                <div class="mdc-slider__thumb-container">
-                    <svg class="mdc-slider__thumb" width="21" height="21">
-                        <circle cx="10.5" cy="10.5" r="7.875"></circle>
-                    </svg>
-                    <div class="mdc-slider__focus-ring"></div>
-                </div>
-            </div>
-            <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50"
-                aria-disabled="true" aria-label="Select Value">
-                <div class="mdc-slider__track-container">
-                    <div class="mdc-slider__track"></div>
-                </div>
-                <div class="mdc-slider__thumb-container">
-                    <svg class="mdc-slider__thumb" width="21" height="21">
-                        <circle cx="10.5" cy="10.5" r="7.875"></circle>
-                    </svg>
-                    <div class="mdc-slider__focus-ring"></div>
-                </div>
-            </div>
 
+            </div>
+            <button class="mdc-fab mdc-fab--extended roll-button-start" ng-click="rollDie()">
+                <div class="mdc-fab__ripple"></div>
+                <span class="mdc-fab__label">{{texts["roll-the-die"]}}</span>
+            </button>
+            <button class="mdc-fab mdc-fab--extended move-button-cancel" ng-click="restart()">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-button__icon" aria-hidden="true">
+                    close</i>
+            </button>
         </div>
-        <button class="mdc-fab mdc-fab--extended roll-button-start" ng-click="rollDie()">
-            <div class="mdc-fab__ripple"></div>
-            <span class="mdc-fab__label">{{texts["roll-the-die"]}}</span>
-        </button>
-    </div>
-    <div id="waitForRoll">
-        <h1>{{texts["wait-for-result"]}}</h1>
-        <div style="display: flex; justify-content: center; align-items: center;">
-            <img src="assets/Ripple-1.1s-197px.svg">
+        <div id="waitForRoll">
+            <h1>{{texts["wait-for-result"]}}</h1>
+            <div style="display: flex; justify-content: center; align-items: center; margin-top: 70px;">
+                <img src="assets/Ripple-1.1s-197px.svg">
+            </div>
         </div>
-    </div>
-    <div id="congrats">
-        <h2>{{texts["great-result"]}} {{rollResult}}!</h2>
-        <button class="mdc-fab mdc-fab--extended congrats-button-restart" ng-click="restart()">
-            <div class="mdc-fab__ripple"></div>
-            <span class="mdc-fab__label">{{texts["choose-another-box"]}}</span>
-        </button>
+        <div id="congrats">
+            <h2>{{texts["great-result"]}} {{rollResult}}!</h2>
+            <button class="mdc-fab mdc-fab--extended congrats-button-restart" ng-click="restart()">
+                <div class="mdc-fab__ripple"></div>
+                <span class="mdc-fab__label">{{texts["choose-another-box"]}}</span>
+            </button>
+        </div>
     </div>
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <script src="index.js"></script>
@@ -392,15 +399,19 @@
             mdc.ripple.MDCRipple.attachTo(button);
         }
 
-        setTimeout(()=> {
+        $('.roll-button-start').hide();
+        $('.move-button-cancel').hide();
+        setTimeout(() => {
             var sliders = document.querySelectorAll('.mdc-slider');
             for (var i = 0, sliders; slider = sliders[i]; i++) {
                 mdc.slider.MDCSlider.attachTo(slider);
             }
-            setTimeout(()=> {
+            setTimeout(() => {
                 $('#rollControls').hide();
-            }, 300);
-        }, 300);
+                $('.roll-button-start').show();
+                $('.move-button-cancel').show();
+            }, 500);
+        }, 500);
 
         var snackAlreadyInUse = mdc.snackbar.MDCSnackbar.attachTo(document.querySelector('#mdc-snackbar-already-in-use'));
 

@@ -11,9 +11,10 @@ app.use(cors())
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({ extended: false }))
 
 require("./app/routes/box.routes.js")(app);
+require("./app/routes/move.routes.js")(app);
 
 /*
 http.createServer(function (req, res) {

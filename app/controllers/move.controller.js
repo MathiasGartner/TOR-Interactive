@@ -8,18 +8,19 @@ exports.scheduleMove = (req, res) => {
       message: "Content can not be empty!"
     });
   }
+  console.log(req.body);
 
   Move.scheduleMove(
-    new Move(req.params.boxId, req.body),
+    new Move(parseInt(req.params.boxId), req.body.direction),
     (err, data) => {
       if (err) {
         if (err.kind === "not_found") {
           res.status(404).send({
-            message: "something went wrong..."
+            message: "something went wrong (404)..."
           });
         } else {
           res.status(500).send({
-            message: "something went wrong..."
+            message: "something went wrong (500)..."
           });
         }
       } else res.send(data);

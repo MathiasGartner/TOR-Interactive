@@ -42,9 +42,9 @@ Box.getAll = result => {
     });
 };
   
-Box.updateById = (id, box, result) => {
+Box.enableUserMode = (id, box, result) => {
     sql.query(
-      "UPDATE client SET UserModeActive = ? WHERE id = ?",
+      "UPDATE client SET UserModeActive = 1 WHERE id = ?",
       [box.userModeActive, id],
       (err, res) => {
         if (err) {

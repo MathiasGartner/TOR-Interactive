@@ -39,7 +39,7 @@ exports.update = (req, res) => {
     });
   }
 
-  Box.updateById(
+  Box.enableUserMode(
     req.params.boxId,
     new Box(req.body),
     (err, data) => {

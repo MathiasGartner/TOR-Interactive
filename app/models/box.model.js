@@ -42,10 +42,10 @@ Box.getAll = result => {
     });
 };
   
-Box.enableUserMode = (id, box, result) => {
+Box.enableUserMode = (id, result) => {
     sql.query(
-      "UPDATE client SET UserModeActive = 1 WHERE id = ?",
-      [box.userModeActive, id],
+      "UPDATE client SET UserModeActive = 1 WHERE id = ? AND AllowUserMode and NOT UserModeActive",
+      [id],
       (err, res) => {
         if (err) {
           console.log("error: ", err);
@@ -54,12 +54,13 @@ Box.enableUserMode = (id, box, result) => {
         }
   
         if (res.affectedRows == 0) {
+          console.log("could not switch to usermode for boxId: ", { id: id });
           result({ kind: "not_found" }, null);
           return;
         }
   
-        console.log("updated box: ", { id: id, ...box });
-        result(null, { id: id, ...box });
+        console.log("switched to usermode for boxId: ", { id: id });
+        result(null, { id: id});
       }
     );
 };

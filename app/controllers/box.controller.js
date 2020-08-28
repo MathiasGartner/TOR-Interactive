@@ -41,16 +41,15 @@ exports.update = (req, res) => {
 
   Box.enableUserMode(
     req.params.boxId,
-    new Box(req.body),
     (err, data) => {
       if (err) {
         if (err.kind === "not_found") {
           res.status(404).send({
-            message: "Could not find Box with id ${req.params.boxId}."
+            message: "Could not switch to user mode for Box with id " + req.params.boxId
           });
         } else {
           res.status(500).send({
-            message: "Error updating Box with id " + req.params.boxId
+            message: "Error wwitching to user mode for Box with id " + req.params.boxId
           });
         }
       } else res.send(data);

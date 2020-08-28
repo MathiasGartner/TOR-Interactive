@@ -2,8 +2,11 @@ var config = require('./config');
 let express = require('express');
 let path = require('path');
 let bodyParser = require("body-parser");
+var cors = require('cors')
 let app = express();
 //var http = require('http');
+
+app.use(cors()) 
 
 app.use(express.static(path.join(__dirname, 'public')));
 

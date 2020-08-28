@@ -11,11 +11,12 @@
         crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
     <script>
+        var apiUrl = 'http://193.171.203.63/'
         var isInUserMode = false;
         var selectedBox;
         var torApp = angular.module('TOR-Interactive', []);
         torApp.controller('TORController', function ($scope, $http) {
-            $http.get('http://193.171.203.63/boxes').then(function (data) {
+            $http.get(apiUrl + 'boxes').then(function (data) {
                 $scope.boxes = data.data.slice(0, 8);
                 $scope.boxes.forEach(b => {
                     b.isSelected = false;
@@ -39,8 +40,8 @@
                     return;
                 }
                 selectedBox.UserModeActive = 1;
-                $http.put('http://193.171.203.63/boxes/' + selectedBox.Id, selectedBox);
-                $http.get('http://193.171.203.63/boxes/' + selectedBox.Id).then(function (data) {
+                $http.put(apiUrl + 'boxes/' + selectedBox.Id, selectedBox);
+                $http.get(apiUrl + 'boxes/' + selectedBox.Id).then(function (data) {
                     $scope.activeBox = data.data;
                     $('#boxOverview').fadeOut(1000);
                     isInUserMode = true;
@@ -49,18 +50,18 @@
             };
 
             $scope.sendMoveCommand = function(direction) {
-                console.log('http://193.171.203.63/move/' + selectedBox.Id, direction);
-                $http.put('http://193.171.203.63/move/' + selectedBox.Id, {"direction": direction});
+                console.log(apiUrl + 'move/' + selectedBox.Id, direction);
+                $http.put(apiUrl + 'move/' + selectedBox.Id, {"direction": direction});
             };
 
-            $scope.rollDie = function() {
-                $http.put('http://193.171.203.63/roll/' + selectedBox.Id);
+            $scope.rollDie = function(dropoffPosition) {
+                $http.put(apiUrl + 'roll/' + selectedBox.Id, {"dropoffPosition": dropoffPosition});
             };
         });
     </script>
 </head>
 
-<body ng-controller="TORController">
+<body class="mdc-typography" ng-controller="TORController">
     <div id="boxOverview">
         <div class="mdc-layout-grid">
             <div class="mdc-layout-grid__inner">
@@ -69,7 +70,9 @@
                 mdc-layout-grid__cell--span-4-tablet
                 mdc-layout-grid__cell--span-2-phone" ng-repeat="box in boxes" ng-click="selectBox(box)">
                     <div class="mdc-card"
-                        ng-class="{'box-available': box.AllowUserMode == 1 && !box.isSelected, 'box-disabled': box.AllowUserMode != 1, 'box-selected': box.isSelected}">
+                        ng-class="{'box-available': box.AllowUserMode == 1 && !box.isSelected, 
+                                   'box-disabled': box.AllowUserMode != 1 || box.UserModeActive == 1, 
+                                   'box-selected': box.isSelected}">
                         <section class="mdc-card__header">
                             <div>
                                 <p class="mdc-card__title">{{box.Material}}</p>

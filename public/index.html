@@ -38,7 +38,7 @@
                     alert('select a box');
                     return;
                 }
-                selectedBox.UserModeActive = true;
+                selectedBox.UserModeActive = 1;
                 $http.put('http://193.171.203.63/boxes/' + selectedBox.Id, selectedBox);
                 $http.get('http://193.171.203.63/boxes/' + selectedBox.Id).then(function (data) {
                     $scope.activeBox = data.data;
@@ -49,7 +49,12 @@
             };
 
             $scope.sendMoveCommand = function(direction) {
-                $http.put('http://193.171.203.63/move/' + selectedBox.Id, direction);
+                console.log('http://193.171.203.63/move/' + selectedBox.Id, direction);
+                $http.put('http://193.171.203.63/move/' + selectedBox.Id, {"direction": direction});
+            };
+
+            $scope.rollDie = function() {
+                $http.put('http://193.171.203.63/roll/' + selectedBox.Id);
             };
         });
     </script>
@@ -147,6 +152,10 @@
                 <div class="mdc-slider__focus-ring"></div>
             </div>
         </div>
+        <button class="mdc-fab mdc-fab--extended button-roll" ng-click="rollDie()">
+            <div class="mdc-fab__ripple"></div>
+            <span class="mdc-fab__label">Start</span>
+        </button>
     </div>
     <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
     <script src="index.js"></script>

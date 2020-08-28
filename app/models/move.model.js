@@ -11,7 +11,7 @@ Move.scheduleMove = (move, result) => {
   //console.log(move.boxId);
   //console.log(move.direction);
   sql.query(
-    "INSERT INTO useraction (ClientId, Action, Parameters) SELECT c.Id, ?, ? FROM client c WHERE c.Id = ? and c.AllowUserMode and c.UserModeActive",
+    "INSERT INTO useraction (ClientId, Action, Parameters) SELECT c.Id, ?, ? FROM client c WHERE c.Id = ? AND c.AllowUserMode AND c.UserModeActive",
     [move.direction, defaultStepSize, move.boxId],
     (err, res) => {
       if (err) {

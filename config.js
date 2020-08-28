@@ -1,5 +1,5 @@
 var config = {};
 
-config.port = 80;
+config.port = 3000;
 
 module.exports = config;

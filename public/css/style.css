@@ -1,0 +1,18 @@
+:root {
+  --mdc-theme-primary: #a32db3;
+  --mdc-theme-secondary: #8ff5c6;
+}
+
+.box-selected {
+  background-color: #a32db3;
+}
+
+.box-disabled {
+  background-color: #101112;
+}
+
+.box-available {
+  background-color: #8ff5c6;
+}
+
+/*# sourceMappingURL=style.css.map */

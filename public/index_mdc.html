@@ -1,0 +1,52 @@
+<html ng-app="TOR-Interactive">
+<head>
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.0/angular.min.js"></script>
+    <script>
+        var torApp = angular.module('TOR-Interactive', []);
+        torApp.controller('TORController', function ($scope, $http) {
+            $http.get('http://193.171.203.63/boxes').then(function (data) {
+                $scope.boxes = data.data.slice(0, 8);
+            });
+            $scope.selectBox = function (box) {
+                box.isSelected = true;
+            };
+        });
+    </script>
+</head>
+
+<body ng-controller="TORController">
+    <ul class="mdc-image-list--with-text-protection box-image-list">
+        <li class="mdc-image-list__item" ng-repeat="box in boxes">
+            <div ng-click="selectBox(box)">
+                <div class="mdc-image-list__image-aspect-container">
+                    <img class="mdc-image-list__image" src="assets/{{box.Material}}.png">
+                </div>
+                <div class="mdc-image-list__supporting">
+                    <span class="mdc-image-list__label">{{box.Material}}</span>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <button class="mdc-button foo-button">
+        <div class="mdc-button__ripple"></div>
+        <span class="mdc-button__label">Button</span>
+    </button>
+    <label class="mdc-text-field mdc-text-field--filled">
+        <span class="mdc-text-field__ripple"></span>
+        <span class="mdc-floating-label" id="my-label-id">Hint text</span>
+        <input class="mdc-text-field__input" type="text" aria-labelledby="my-label-id">
+        <span class="mdc-line-ripple"></span>
+    </label>
+    <script src="index.js"></script>
+    <script>
+        mdc.ripple.MDCRipple.attachTo(document.querySelector('.foo-button'));
+        mdc.textField.MDCTextField.attachTo(document.querySelector('.mdc-text-field'));
+    </script>
+</body>
+</html>

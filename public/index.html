@@ -50,7 +50,7 @@
         var selectedBox;
         var fadeInOutTime = 750;
         var refreshTime = 2000;
-        var showWaitSpinner = false;
+        var waitForUserModeReady = false;
         var waitForRollFinish = false;
 
         var slidersAttached = true;;
@@ -78,19 +78,36 @@
             $scope.waitText = $scope.texts["wait-for-box"];
             $scope.showStartButton = false;
 
+            $scope.getUserModeReadyState = function() {
+                $http.get(apiUrl + 'boxes/' + boxId).then(function (data) {
+                    var boxData = data.data;
+                    if (boxData.CurrentState == "ROLL" || boxData.CurrentState == "PICKUP_TAKEIMAGE") {
+                        $('#waitSpinner').fadeOut(fadeInOutTime, function () {
+                            waitForUserModeReady = false;
+                            $('#moveControls').fadeIn(fadeInOutTime);
+                        });
+                    }
+                    else if (boxData.CurrentState == "PICKUP_PICKUP") {
+                        $('#waitSpinner').fadeOut(fadeInOutTime, function () {
+                            waitForUserModeReady = false;
+                            $('#rollControls').fadeIn(fadeInOutTime);
+                        });
+                    }
+                });
+            };
+
             $scope.getRollResult = function (boxId) {
                 $http.get(apiUrl + 'roll/' + boxId).then(function (data) {
                     $scope.rollResult = data.data.Result;
                     if ($scope.rollResult > 0) {
                         $('#waitSpinner').fadeOut(fadeInOutTime, function () {
+                            waitForRollFinish = false;
                             $('#congrats').fadeIn(fadeInOutTime);
-                            showWaitSpinner = false;                            
                         });
                     }
                     else if ($scope.rollResult == 0) {
-                        //TODO:
                         alert("Could not find the die, seems something went wrong.");
-                        showWaitSpinner = false;
+                        waitForRollFinish = false;
                     }
                 });
             };
@@ -113,7 +130,13 @@
             }, refreshTime);
 
             $interval(function () {
-                if (showWaitSpinner) {
+                if (waitForUserModeReady) {
+                    $scope.getUserModeReadyState(selectedBox.Id);
+                }
+            }, refreshTime);
+
+            $interval(function () {
+                if (waitForRollFinish) {
                     $scope.getRollResult(selectedBox.Id);
                 }
             }, refreshTime);
@@ -144,15 +167,8 @@
                             isInUserMode = true;
                             $('#boxOverview').fadeOut(fadeInOutTime, function () {
                                 $scope.waitText = $scope.texts["wait-for-box"];
-                                showWaitSpinner = true;
-                                $('#waitSpinner').fadeIn(fadeInOutTime, function () {
-                                    setTimeout(() => {
-                                        $('#waitSpinner').fadeOut(fadeInOutTime, function () {
-                                            showWaitSpinner = false;
-                                            $('#moveControls').fadeIn(fadeInOutTime);
-                                        });
-                                    }, 5000);
-                                });
+                                waitForUserModeReady = true;
+                                $('#waitSpinner').fadeIn(fadeInOutTime);
                             });
                         });
                     })
@@ -168,7 +184,8 @@
                 $('#moveControls, #rollControls, #waitSpinner, #congrats').fadeOut(fadeInOutTime, function () {
                     isInUserMode = false;
                     $scope.showStartButton = false;
-                    showWaitSpinner = false;
+                    waitForUserModeReady = false;
+                    waitForRollFinish = false;
                     $scope.reloadBoxes();
                     $('#boxOverview').fadeIn(fadeInOutTime);
                 });
@@ -191,9 +208,9 @@
                     .put(apiUrl + 'roll/' + selectedBox.Id, { "dropoffPosition": dropoffPosition })
                     .then(function (response) {
                         $('#rollControls').fadeOut(fadeInOutTime, function () {
-                            $('#waitSpinner').fadeIn(fadeInOutTime);
                             $scope.waitText = $scope.texts["wait-for-result"];
-                            showWaitSpinner = true;
+                            waitForRollFinish = true;
+                            $('#waitSpinner').fadeIn(fadeInOutTime);
                         });
                     });
             };
@@ -215,7 +232,8 @@
                                    'box-disabled': box.AllowUserMode != 1 || box.UserModeActive == 1, 
                                    'box-selected': box.isSelected}">
                             <div class="mdc-card__primary-action">
-                                <div class="mdc-card__media mdc-card__media--square" style="background-image: url('assets/{{box.Latin}}.jpg');">
+                                <div class="mdc-card__media mdc-card__media--square"
+                                    style="background-image: url('assets/{{box.Latin}}.jpg');">
                                     <div class="mdc-card__media-content">{{box.Latin}}</div>
                                 </div>
                             </div>

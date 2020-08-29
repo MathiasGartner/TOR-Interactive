@@ -29,7 +29,7 @@ Box.findById = (clientId, result) => {
 };
   
 Box.getAll = result => {
-    sql.query('SELECT Id, Material, Position, Latin, AllowUserMode, UserModeActive ' + 
+    sql.query('SELECT Id, Material, Position, Latin, AllowUserMode, UserModeActive, CurrentState ' + 
               'FROM client WHERE Position IS NOT NULL ORDER BY Position', (err, res) => {
       if (err) {
         console.log("error: ", err);

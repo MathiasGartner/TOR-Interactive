@@ -13,7 +13,7 @@ exports.findAll = (req, res) => {
     });
   };
 
-// Find a single Box with a boxId
+// Find a single Box with boxId
 exports.findOne = (req, res) => {
     Box.findById(req.params.boxId, (err, data) => {
         if (err) {

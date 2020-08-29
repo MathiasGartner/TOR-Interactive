@@ -1,9 +1,23 @@
-@use "@material/button";
 @use "@material/typography/mdc-typography";
+@use "@material/card";
+@use "@material/button";
+@use "@material/fab";
+@use "@material/icon-button";
+@use "@material/slider";
+@use "@material/snackbar/mdc-snackbar";
+@use "@material/ripple";
+
+@import "@material/layout-grid/mdc-layout-grid";
+
+@include card.core-styles;
+@include button.core-styles;
+@include fab.core-styles;
+@include icon-button.core-styles;
+@include slider.core-styles;
 
 :root {
-    --mdc-theme-primary: #a32db3;
-    --mdc-theme-secondary: #8ff5c6;
+    --mdc-theme-primary: #5a1077;
+    --mdc-theme-secondary: #288c78;
 }
 
 //.control-button {
@@ -11,7 +25,7 @@
 //}
 
 .box-available {
-    background-color: #a32db3;
+    background-color: #5a1077;
 }
 
 .box-disabled {
@@ -19,7 +33,7 @@
 }
 
 .box-selected {
-    background-color: #8ff5c6;
+    background-color: #288c78;
 }
 
 .mdc-layout-grid__inner .mdc-layout-grid__inner .mdc-layout-grid__inner {       

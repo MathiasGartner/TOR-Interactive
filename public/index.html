@@ -78,7 +78,7 @@
             $scope.waitText = $scope.texts["wait-for-box"];
             $scope.showStartButton = false;
 
-            $scope.getUserModeReadyState = function() {
+            $scope.getUserModeReadyState = function(boxId) {
                 $http.get(apiUrl + 'boxes/' + boxId).then(function (data) {
                     var boxData = data.data;
                     if (boxData.CurrentState == "ROLL" || boxData.CurrentState == "PICKUP_TAKEIMAGE") {
@@ -233,7 +233,7 @@
                                    'box-selected': box.isSelected}">
                             <div class="mdc-card__primary-action">
                                 <div class="mdc-card__media mdc-card__media--square"
-                                    style="background-image: url('assets/{{box.Latin}}.jpg');">
+                                    style="background-image: url('assets/pics/{{box.Latin}}.jpg');">
                                     <div class="mdc-card__media-content">{{box.Latin}}</div>
                                 </div>
                             </div>
@@ -294,8 +294,8 @@
                             </button>
                         </div>
                     </div>
-                    <div>
-                        illu here
+                    <div style="margin-top: 50px;">
+                        <img src="assets/illustration/cursor.png" alt="cursor" style="width: 40%; margin:auto;">
                     </div>
                 </div>
                 <div style="width: 30%; margin: auto; float: left;">
@@ -322,8 +322,8 @@
                             </button>
                         </div>
                     </div>
-                    <div>
-                        illu 2 here
+                    <div style="margin-top: 50px;">
+                        <img src="assets/illustration/cursor_up_down.png" alt="cursor_up_down" style="width: 60%; margin:auto;">
                     </div>
                 </div>
             </div>

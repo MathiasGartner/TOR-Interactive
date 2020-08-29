@@ -44,8 +44,9 @@ Box.getAll = result => {
   
 Box.enableUserMode = (id, result) => {
     sql.query(
-      "UPDATE client SET UserModeActive = 1 WHERE id = ? AND AllowUserMode and NOT UserModeActive",
-      [id],
+      "UPDATE client SET UserModeActive = 1 WHERE id = ? AND AllowUserMode and NOT UserModeActive; " + 
+      "INSERT INTO jobqueue (ClientId, JobCode, JobParameters) VALUES (?, ?, ?); ",
+      [id, id, "U", ""],
       (err, res) => {
         if (err) {
           console.log("error: ", err);
@@ -53,7 +54,7 @@ Box.enableUserMode = (id, result) => {
           return;
         }
   
-        if (res.affectedRows == 0) {
+        if (res[0].affectedRows == 0) {
           console.log("could not switch to usermode for boxId: ", { id: id });
           result({ kind: "not_found" }, null);
           return;

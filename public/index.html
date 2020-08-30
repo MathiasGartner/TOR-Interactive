@@ -22,8 +22,8 @@
             "before-start-magnet": "Now you have control over the magnet.",
             "ready-to-roll": "Ready to roll!",
             "choose-roll-position": "Choose where to roll the die!",
-            "roll-position-left": "on the LEFT side:",
-            "roll-position-right": "or on the RIGHT side:",
+            "die-not-on-magnet": "Nothing to roll on the magnet?",
+            "to-move-controls": "Open move controls",
             "roll-the-die": "Roll the die!",
             "wait-for-result": "Waiting for your result...",
             "great-result": "Great, you rolled a",
@@ -37,8 +37,8 @@
             "before-start-magnet": "Du hast jetzt die Kontrolle über den Magneten.",
             "ready-to-roll": "Bereit zum Würfeln!",
             "choose-roll-position": "Wähle den Abwurfort!",
-            "roll-position-left": "auf der linken Seite:",
-            "roll-position-right": "oder auf der rechten Seite:",
+            "die-not-on-magnet": "Würfel nicht am Magnet?",
+            "to-move-controls": "Zur Steuerung",
             "roll-the-die": "Würfle!",
             "wait-for-result": "Warte auf das Ergebnis...",
             "great-result": "Great, you rolled a",
@@ -78,7 +78,7 @@
             $scope.waitText = $scope.texts["wait-for-box"];
             $scope.showStartButton = false;
 
-            $scope.getUserModeReadyState = function(boxId) {
+            $scope.getUserModeReadyState = function (boxId) {
                 $http.get(apiUrl + 'boxes/' + boxId).then(function (data) {
                     var boxData = data.data;
                     if (boxData.CurrentState == "ROLL" || boxData.CurrentState == "PICKUP_TAKEIMAGE") {
@@ -181,6 +181,7 @@
             };
 
             $scope.restart = function () {
+                $scope.sendMoveCommand("EXIT");
                 $('#moveControls, #rollControls, #waitSpinner, #congrats').fadeOut(fadeInOutTime, function () {
                     isInUserMode = false;
                     $scope.showStartButton = false;
@@ -196,6 +197,12 @@
                 $http.put(apiUrl + 'move/' + selectedBox.Id, { "direction": direction });
             };
 
+            $scope.switchToMoveControls = function() {
+                $('#rollControls').fadeOut(fadeInOutTime, function () {
+                    $('#moveControls').fadeIn(fadeInOutTime);
+                });
+            };
+
             $scope.switchToRollMode = function () {
                 attachSliders();
                 $('#moveControls').fadeOut(fadeInOutTime, function () {
@@ -203,7 +210,8 @@
                 });
             };
 
-            $scope.rollDie = function (dropoffPosition) {
+            $scope.rollDie = function() {
+                var dropoffPosition = Math.floor(sliderTop.foundation.getValue());
                 $http
                     .put(apiUrl + 'roll/' + selectedBox.Id, { "dropoffPosition": dropoffPosition })
                     .then(function (response) {
@@ -323,7 +331,8 @@
                         </div>
                     </div>
                     <div style="margin-top: 50px;">
-                        <img src="assets/illustration/cursor_up_down.png" alt="cursor_up_down" style="width: 60%; margin:auto;">
+                        <img src="assets/illustration/cursor_up_down.png" alt="cursor_up_down"
+                            style="width: 60%; margin:auto;">
                     </div>
                 </div>
             </div>
@@ -339,9 +348,8 @@
         </div>
         <div id="rollControls" style="width: 85%; max-width: 700px; margin: auto;">
             <h2>{{texts["choose-roll-position"]}}</h2>
-            <h2>{{texts["roll-position-left"]}}</h2>
             <div id="rollControlsLeft" style="width: 100%">
-                <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100"
+                <div id="sliderTop" class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100"
                     aria-valuenow="50" aria-disabled="false" aria-label="Select Value">
                     <div class="mdc-slider__track-container">
                         <div class="mdc-slider__track"></div>
@@ -353,8 +361,8 @@
                         <div class="mdc-slider__focus-ring"></div>
                     </div>
                 </div>
-                <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100"
-                    aria-valuenow="50" aria-disabled="false" aria-label="Select Value">
+                <div id="sliderBottom" class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0"
+                    aria-valuemax="100" aria-valuenow="50" aria-disabled="false" aria-label="Select Value">
                     <div class="mdc-slider__track-container">
                         <div class="mdc-slider__track"></div>
                     </div>
@@ -366,34 +374,18 @@
                     </div>
                 </div>
             </div>
-            <h2>{{texts["roll-position-right"]}}</h2>
-            <div id="rollControlsRight" style="width: 100%">
-                <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100"
-                    aria-valuenow="50" aria-disabled="true" aria-label="Select Value">
-                    <div class="mdc-slider__track-container">
-                        <div class="mdc-slider__track"></div>
-                    </div>
-                    <div class="mdc-slider__thumb-container">
-                        <svg class="mdc-slider__thumb" width="21" height="21">
-                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
-                        </svg>
-                        <div class="mdc-slider__focus-ring"></div>
-                    </div>
-                </div>
-                <div class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0" aria-valuemax="100"
-                    aria-valuenow="50" aria-disabled="true" aria-label="Select Value">
-                    <div class="mdc-slider__track-container">
-                        <div class="mdc-slider__track"></div>
-                    </div>
-                    <div class="mdc-slider__thumb-container">
-                        <svg class="mdc-slider__thumb" width="21" height="21">
-                            <circle cx="10.5" cy="10.5" r="7.875"></circle>
-                        </svg>
-                        <div class="mdc-slider__focus-ring"></div>
-                    </div>
-                </div>
-
+            <div style="margin-top: 50px;">
+                <img src="assets/illustration/cursor.png" alt="cursor" style="width: 40%; margin:auto;">
             </div>
+            <di>
+                <h5>
+                    {{texts["die-not-on-magnet"]}}
+                    <br/>
+                    <span style="text-decoration: underline; cursor: pointer" ng-click="switchToMoveControls()">
+                        {{texts["to-move-controls"]}}
+                    </span>
+                </h5>
+            </di>
             <button class="mdc-fab mdc-fab--extended roll-button-start" ng-click="rollDie()">
                 <div class="mdc-fab__ripple"></div>
                 <span class="mdc-fab__label">{{texts["roll-the-die"]}}</span>
@@ -428,12 +420,31 @@
 
         $('.roll-button-start').hide();
         $('.move-button-cancel').hide();
+        var sliderTopElement;
+        var sliderTop;
+        var sliderBottomElement;
+        var sliderBottom;
+
+        sliderTopUpdated = function (event) {
+            val = sliderTop.foundation.getValue();
+            sliderBottom.foundation.setValue(val);
+        };
+
+        sliderBottomUpdated = function (event) {
+            val = sliderBottom.foundation.getValue();
+            sliderTop.foundation.setValue(val);
+        };
+
         setTimeout(() => {
-            var sliders = document.querySelectorAll('.mdc-slider');
-            for (var i = 0, sliders; slider = sliders[i]; i++) {
-                mdc.slider.MDCSlider.attachTo(slider);
-            }
             setTimeout(() => {
+                sliderTopElement = document.querySelector('#sliderTop');
+                sliderTop = mdc.slider.MDCSlider.attachTo(sliderTopElement);
+                sliderBottomElement = document.querySelector('#sliderBottom');
+                sliderBottom = mdc.slider.MDCSlider.attachTo(sliderBottomElement);
+                sliderTopElement.addEventListener('MDCSlider:input', sliderTopUpdated);
+                sliderTopElement.addEventListener('MDCSlider:change', sliderTopUpdated);
+                sliderBottomElement.addEventListener('MDCSlider:input', sliderBottomUpdated);
+                sliderBottomElement.addEventListener('MDCSlider:change', sliderBottomUpdated);
                 $('#rollControls').hide();
                 $('.roll-button-start').show();
                 $('.move-button-cancel').show();

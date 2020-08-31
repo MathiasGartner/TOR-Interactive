@@ -2627,11 +2627,14 @@ svg.mdc-button__icon {
 }
 
 .box-disabled {
-  background-color: #909090;
+  opacity: 0.3;
 }
 
 .box-selected {
-  background-color: #288c78;
+  box-shadow: 0px 0px 9px 4px rgba(10, 11, 12, 0.2);
+  border-style: solid;
+  border-color: #288c78;
+  border-width: 2px;
 }
 
 .mdc-layout-grid__inner .mdc-layout-grid__inner .mdc-layout-grid__inner {
@@ -2656,6 +2659,12 @@ svg.mdc-button__icon {
   position: fixed;
   top: 20;
   right: 20;
+  background-color: white;
+  box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.1);
+}
+
+.move-button-cancel-icon {
+  color: #0a0b0c;
 }
 
 .roll-button-start {
@@ -2680,6 +2689,65 @@ svg.mdc-button__icon {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+.section-headline {
+  margin-top: 50px;
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-bottom: 10px;
+}
+
+.section-subline {
+  padding-left: 16px;
+  padding-right: 16px;
+  margin-top: 14px;
+}
+
+.control-area {
+  margin-top: 10px;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.control-container {
+  width: 50%;
+}
+
+.control-illu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+}
+
+.control-illu-img {
+  width: 70px;
+}
+
+.roll-illu {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.roll-illu-img {
+  width: 100px;
+}
+
+.option-pickup {
+  margin-top: 80px;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+.congrats {
+  text-align: center;
+}
+
+.bottom-spaceholer {
+  min-height: 100px;
 }
 
 /*# sourceMappingURL=style.css.map */

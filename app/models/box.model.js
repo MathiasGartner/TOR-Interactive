@@ -7,8 +7,22 @@ const Box = function(box) {
     this.userModeActive = box.userModeActive;
   };
   
+Box.getAll = result => {
+    sql.query('SELECT Id, Material, Position, Latin, AllowUserMode, UserModeActive, CurrentState ' + 
+              'FROM client WHERE Position IS NOT NULL ORDER BY Position', (err, res) => {
+      if (err) {
+        console.log("error: ", err);
+        result(null, err);
+        return;
+      }
+  
+      console.log("client: ", res);
+      result(null, res);
+    });
+};
+  
 Box.findById = (clientId, result) => {
-    sql.query('SELECT Id, Material, Position, Latin, AllowUserMode, UserModeActive ' + 
+    sql.query('SELECT Id, Material, Position, Latin, AllowUserMode, UserModeActive, CurrentState ' + 
               'FROM client WHERE id = ?',
               [clientId],
               (err, res) => {
@@ -25,20 +39,6 @@ Box.findById = (clientId, result) => {
       }
   
       result({ kind: "not_found" }, null);
-    });
-};
-  
-Box.getAll = result => {
-    sql.query('SELECT Id, Material, Position, Latin, AllowUserMode, UserModeActive, CurrentState ' + 
-              'FROM client WHERE Position IS NOT NULL ORDER BY Position', (err, res) => {
-      if (err) {
-        console.log("error: ", err);
-        result(null, err);
-        return;
-      }
-  
-      console.log("client: ", res);
-      result(null, res);
     });
 };
   

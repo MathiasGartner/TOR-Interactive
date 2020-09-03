@@ -72,6 +72,7 @@
         var timoutDieNotRecognized = 40000;
         var waitForUserModeReady = false;
         var waitForRollFinish = false;
+        var waitForRollFinishPromise;
 
         var slidersAttached = true;;
         function attachSliders() {
@@ -126,6 +127,7 @@
                 if (rollResult >= 0) {
                     $('#waitSpinner').fadeOut(fadeInOutTime, function () {
                         waitForRollFinish = false;
+                        $interval.cancel(waitForRollFinishPromise);
                         $('#congrats').fadeIn(fadeInOutTime);
                     });
                 }
@@ -235,6 +237,7 @@
                     $scope.showStartButton = false;
                     waitForUserModeReady = false;
                     waitForRollFinish = false;
+                    $interval.cancel(waitForRollFinishPromise);
                     $scope.reloadBoxes();
                     $('#boxOverview').fadeIn(fadeInOutTime);
                 });                
@@ -267,12 +270,11 @@
                             $scope.waitText = $scope.texts["wait-for-result"];
                             waitForRollFinish = true;
                             $('#waitSpinner').fadeIn(fadeInOutTime);
-                            $interval(function() {                                
+                            waitForRollFinishPromise = $interval(function() {                                                             
                                 if (waitForRollFinish) {
-                                    console.log("timed out...");
                                     $scope.showCongrats(0);
                                 }
-                            }, timoutDieNotRecognized);
+                            }, timoutDieNotRecognized, 1);
                         });
                     });
             };

@@ -142,10 +142,13 @@
             }, refreshTimeUserModeReady);
 
             $interval(function () {
+                //TODO: if there is no result after 20 seconds -> error message
                 if (waitForRollFinish) {
                     $scope.getRollResult(selectedBox.Id);
                 }
             }, refreshTimeWaitForRollFinish);
+
+            //TODO: check if still in user mode (eg. timeout on client occured?) if not -> go to start 
 
             $scope.selectBox = function (box) {
                 if (box.AllowUserMode == 1 && !box.UserModeActive) {
@@ -195,7 +198,7 @@
                     waitForRollFinish = false;
                     $scope.reloadBoxes();
                     $('#boxOverview').fadeIn(fadeInOutTime);
-                });
+                });                
             };
 
             $scope.sendMoveCommand = function (direction) {
@@ -275,8 +278,8 @@
                 <div>
                     <div style="float: left" class="control-container">
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <button class="mdc-icon-button material-icons control-button-front"
-                                ng-click="sendMoveCommand('FRONT')">keyboard_arrow_up</button>
+                            <button class="mdc-icon-button material-icons control-button-back"
+                                ng-click="sendMoveCommand('BACK')">keyboard_arrow_up</button>
                         </div>
                         <div style="display: flex; justify-content: center; align-items: center;">
                             <button class="mdc-icon-button material-icons control-button-left"
@@ -287,8 +290,8 @@
                                 ng-click="sendMoveCommand('RIGHT')">keyboard_arrow_right</button>
                         </div>
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <button class="mdc-icon-button material-icons control-button-back"
-                                ng-click="sendMoveCommand('BACK')">keyboard_arrow_down</button>
+                            <button class="mdc-icon-button material-icons control-button-front"
+                                ng-click="sendMoveCommand('FRONT')">keyboard_arrow_down</button>
                         </div>
                     </div>
                     <div style="padding-top: 9px; float: left" class="control-container">

@@ -26,10 +26,16 @@
             "to-move-controls": "Open move controls",
             "roll-the-die": "Roll the die!",
             "wait-for-result": "Waiting for your result...",
-            "great-result_p1": "Great,",
-            "great-result_p2": "you rolled a",
-            "great-result_p3": "!",
+            "great-default": "Thank you for your random number. It will be part of our calculations.",
+            "great-result_p1": "Great,\nyou rolled a ",
+            "great-result_p2": "!",
             "choose-another-box": "Choose another box!",
+            "result-1": "one",
+            "result-2": "two",
+            "result-3": "three",
+            "result-4": "four",
+            "result-5": "five",
+            "result-6": "six",
         };
         var texts_de = {
             "select-a-box": "Wähle deine Box",
@@ -43,21 +49,30 @@
             "to-move-controls": "Zur Steuerung",
             "roll-the-die": "Würfle!",
             "wait-for-result": "Warte auf das Ergebnis...",
-            "great-result_p1": "Super,",
-            "great-result_p2": "du hast einen",
-            "great-result_p3": "gewürfelt!",
+            "great-default": "Danke für diese Zufallszahl.",
+            "great-result_p1": "Super,\ndu hast einen\n",
+            "great-result_p2": "\ngewürfelt!",
             "choose-another-box": "Wähle eine andere Box!",
+            "result-1": "Einser",
+            "result-2": "Zweier",
+            "result-3": "Dreier",
+            "result-4": "Vierer",
+            "result-5": "Fünfer",
+            "result-6": "Sechser",
         };
-        var apiUrl = "http://193.171.203.63/";
-        //var apiUrl = "";
+        //var apiUrl = "http://193.171.203.63/";
+        var apiUrl = "";
         var isInUserMode = false;
         var selectedBox;
         var fadeInOutTime = 750;
         var refreshTimeReloadBoxes = 2000000;
         var refreshTimeUserModeReady = 2000;
         var refreshTimeWaitForRollFinish = 2000;
+        var refreshTimeheckIfStillInUserMode = 2000;
+        var timoutDieNotRecognized = 40000;
         var waitForUserModeReady = false;
         var waitForRollFinish = false;
+        var waitForRollFinishPromise;
 
         var slidersAttached = true;;
         function attachSliders() {
@@ -102,20 +117,38 @@
                 });
             };
 
+            $scope.showCongrats = function(rollResult) {
+                if (rollResult > 0) {
+                    $scope.congratsText = $scope.texts["great-result_p1"] + $scope.texts["result-" + rollResult] + $scope.texts["great-result_p2"];
+                }
+                else if (rollResult == 0) {
+                    $scope.congratsText = $scope.texts["great-default"];
+                }
+                if (rollResult >= 0) {
+                    $('#waitSpinner').fadeOut(fadeInOutTime, function () {
+                        waitForRollFinish = false;
+                        $interval.cancel(waitForRollFinishPromise);
+                        $('#congrats').fadeIn(fadeInOutTime);
+                    });
+                }
+            };
+
             $scope.getRollResult = function (boxId) {
                 $http.get(apiUrl + 'roll/' + boxId).then(function (data) {
                     $scope.rollResult = data.data.Result;
-                    if ($scope.rollResult > 0) {
-                        $('#waitSpinner').fadeOut(fadeInOutTime, function () {
-                            waitForRollFinish = false;
-                            $('#congrats').fadeIn(fadeInOutTime);
-                        });
-                    }
-                    else if ($scope.rollResult == 0) {
-                        alert("Could not find the die, seems something went wrong.");
-                        waitForRollFinish = false;
-                    }
+                    $scope.showCongrats($scope.rollResult);
                 });
+            };
+
+            $scope.checkIfStillInUserMode = function(onUserModeInactive) {
+                if (selectedBox && selectedBox.Id > 0) {
+                    $http.get(apiUrl + 'boxes/' + selectedBox.Id).then(function (data) {
+                        currentBoxData = data.data;                    
+                        if (currentBoxData && !currentBoxData.UserModeActive) {
+                            onUserModeInactive();
+                        }
+                    });
+                }
             };
 
             $scope.reloadBoxes = function () {
@@ -148,7 +181,13 @@
                 }
             }, refreshTimeWaitForRollFinish);
 
-            //TODO: check if still in user mode (eg. timeout on client occured?) if not -> go to start 
+            $interval(function() {
+                if (isInUserMode) {
+                    $scope.checkIfStillInUserMode(function() {
+                        $scope.restart(false);
+                    });
+                }
+            }, refreshTimeheckIfStillInUserMode);
 
             $scope.selectBox = function (box) {
                 if (box.AllowUserMode == 1 && !box.UserModeActive) {
@@ -189,13 +228,16 @@
                     });
             };
 
-            $scope.restart = function () {
-                $scope.sendMoveCommand("EXIT");
+            $scope.restart = function (sendExit = true) {
+                if (sendExit) {
+                    $scope.sendMoveCommand("EXIT");
+                }
                 $('#moveControls, #rollControls, #waitSpinner, #congrats').fadeOut(fadeInOutTime, function () {
                     isInUserMode = false;
                     $scope.showStartButton = false;
                     waitForUserModeReady = false;
                     waitForRollFinish = false;
+                    $interval.cancel(waitForRollFinishPromise);
                     $scope.reloadBoxes();
                     $('#boxOverview').fadeIn(fadeInOutTime);
                 });                
@@ -228,6 +270,11 @@
                             $scope.waitText = $scope.texts["wait-for-result"];
                             waitForRollFinish = true;
                             $('#waitSpinner').fadeIn(fadeInOutTime);
+                            waitForRollFinishPromise = $interval(function() {                                                             
+                                if (waitForRollFinish) {
+                                    $scope.showCongrats(0);
+                                }
+                            }, timoutDieNotRecognized, 1);
                         });
                     });
             };
@@ -396,11 +443,11 @@
         <div id="congrats">
             <div style="margin-top: 120px">
                 <h1 class="congrats">
-                    {{texts["great-result_p1"]}}</br>{{texts["great-result_p2"]}}</br>{{rollResult}}</br>{{texts["great-result_p3"]}}
+                    {{congratsText}}
                 </h1>
             </div>
             <div style="margin-top: 50px;" class="roll-illu">
-                <img src="assets/illustration/cursor.png" alt="cursor" class="roll-illu-img">
+                <img ng-src="assets/illustration/result-{{rollResult}}" alt="result" class="result-illu-img">
             </div>
             <button class="mdc-fab mdc-fab--extended congrats-button-restart" ng-click="restart()">
                 <div class="mdc-fab__ripple"></div>

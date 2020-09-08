@@ -1,0 +1,11 @@
+{
+    "name": "The Transparency of Randomness",
+    "short_name": "TOR",
+    "icons": [{
+        "src": "google-touch-icon.png",
+        "sizes": "512x512"
+    }],
+    "background_color": "#ffffff",
+    "theme_color": "#288c78",
+    "display": "fullscreen"
+}

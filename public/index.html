@@ -447,7 +447,7 @@
                 </h1>
             </div>
             <div style="margin-top: 50px;" class="roll-illu">
-                <img ng-src="assets/illustration/result-{{rollResult}}" alt="result" class="result-illu-img">
+                <img ng-src="assets/illustration/result-{{rollResult}}.png" alt="result" class="result-illu-img">
             </div>
             <button class="mdc-fab mdc-fab--extended congrats-button-restart" ng-click="restart()">
                 <div class="mdc-fab__ripple"></div>
@@ -499,8 +499,8 @@
 
         var snackAlreadyInUse = mdc.snackbar.MDCSnackbar.attachTo(document.querySelector('#mdc-snackbar-already-in-use'));
 
-        $('#boxOverview').hide();
-        //$('#moveControls').hide();
+        //$('#boxOverview').hide();
+        $('#moveControls').hide();
         $('#waitSpinner').hide();
         $('#congrats').hide();
     </script>

@@ -81,7 +81,7 @@
         var waitForRollFinish = false;
         var waitForRollFinishPromise;
 
-        var slidersAttached = true;;
+        var slidersAttached = true;
         function attachSliders() {
             if (!slidersAttached) {
                 var sliders = document.querySelectorAll('.mdc-slider');
@@ -399,18 +399,6 @@
                             <div class="mdc-slider__focus-ring"></div>
                         </div>
                     </div>
-                    <div id="sliderBottom" class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0"
-                        aria-valuemax="100" aria-valuenow="50" aria-disabled="false" aria-label="Select Value">
-                        <div class="mdc-slider__track-container">
-                            <div class="mdc-slider__track"></div>
-                        </div>
-                        <div class="mdc-slider__thumb-container">
-                            <svg class="mdc-slider__thumb" width="21" height="21">
-                                <circle cx="10.5" cy="10.5" r="7.875"></circle>
-                            </svg>
-                            <div class="mdc-slider__focus-ring"></div>
-                        </div>
-                    </div>
                 </div>
                 <div style="margin-top: 50px;" class="roll-illu">
                     <img src="assets/illustration/slider_cube_1.png" alt="cursor" class="roll-illu-img">
@@ -475,29 +463,11 @@
         $('.move-button-cancel').hide();
         var sliderTopElement;
         var sliderTop;
-        var sliderBottomElement;
-        var sliderBottom;
-
-        sliderTopUpdated = function (event) {
-            val = sliderTop.foundation.getValue();
-            sliderBottom.foundation.setValue(val);
-        };
-
-        sliderBottomUpdated = function (event) {
-            val = sliderBottom.foundation.getValue();
-            sliderTop.foundation.setValue(val);
-        };
 
         setTimeout(() => {
             setTimeout(() => {
                 sliderTopElement = document.querySelector('#sliderTop');
                 sliderTop = mdc.slider.MDCSlider.attachTo(sliderTopElement);
-                sliderBottomElement = document.querySelector('#sliderBottom');
-                sliderBottom = mdc.slider.MDCSlider.attachTo(sliderBottomElement);
-                sliderTopElement.addEventListener('MDCSlider:input', sliderTopUpdated);
-                sliderTopElement.addEventListener('MDCSlider:change', sliderTopUpdated);
-                sliderBottomElement.addEventListener('MDCSlider:input', sliderBottomUpdated);
-                sliderBottomElement.addEventListener('MDCSlider:change', sliderBottomUpdated);
                 $('#rollControls').hide();
                 $('.roll-button-start').show();
                 $('.move-button-cancel').show();

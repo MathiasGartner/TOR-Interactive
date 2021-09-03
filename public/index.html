@@ -451,7 +451,7 @@
             <div class="bottom-spaceholer"></div>
         </div>
     </div>
-    <script src="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.js"></script>
+    <script src="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.js"></script>
     <script src="index.js"></script>
     <script type="text/javascript">
         var buttons = document.querySelectorAll('.mdc-button, .mdc-fab .mdc-card__primary-action');
@@ -468,7 +468,7 @@
             setTimeout(() => {
                 sliderTopElement = document.querySelector('#sliderTop');
                 sliderTop = mdc.slider.MDCSlider.attachTo(sliderTopElement);
-                $('#rollControls').hide();
+                //$('#rollControls').hide();
                 $('.roll-button-start').show();
                 $('.move-button-cancel').show();
             }, 500);

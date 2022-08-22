@@ -1,6 +1,6 @@
 :root {
-  --mdc-theme-primary: #5a1077;
-  --mdc-theme-secondary: #288c78;
+  --mdc-theme-primary: #288c78;
+  --mdc-theme-secondary: #5a1077;
 }
 
 .box-available {
@@ -20,6 +20,37 @@
 
 .mdc-layout-grid__inner .mdc-layout-grid__inner .mdc-layout-grid__inner {
   grid-gap: 0px;
+}
+
+.tor-btn-single {
+  position: fixed;
+  bottom: 20;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+}
+
+.tor-btn-first {
+  position: fixed;
+  bottom: 20;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+}
+
+.tor-btn-second {
+  position: fixed;
+  bottom: 90;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+}
+
+.tor-illu {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .box-button-start {
@@ -104,17 +135,6 @@
 
 .control-illu-img {
   width: 70px;
-}
-
-.roll-illu {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
-
-.roll-illu-img {
-  width: 160px;
 }
 
 .option-pickup {

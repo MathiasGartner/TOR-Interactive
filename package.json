@@ -33,7 +33,7 @@
   },
   "scripts": {
     "start": "node app.js",
-    "build": "webpack && cp ./dist/*.css ./public/css/",
+    "build": "webpack && cp ./dist/*.css ./public/css/"
   },
   "repository": {
     "type": "git",

@@ -14,6 +14,7 @@
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500">
+    <link rel="stylesheet" href="css/mdc-bundle.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
         integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
@@ -23,13 +24,20 @@
         var userLang = navigator.language || navigator.userLanguage;
         var texts_en = {
             "select-a-box": "Select your Box",
-            "wait-for-box": "Your box is preparing for interaction...",
+            "wait-for-box": "Your box is being prepared for interaction...",
             "box-already-in-use": "Box already in use by another visitor. Please choose another one.",
-            "before-start-pick": "Before you start to roll the dice, you have to pick it up.",
-            "before-start-magnet": "Now you have control over the magnet.",
+            "start-pick-up": "Pick up the dice with the electromagnet",
+            "start-pick-up-info": "The electromagnet can be controlled by pressing the arrows",
             "ready-to-roll": "Ready to roll!",
-            "choose-roll-position": "Choose where to roll the die!",
+            "choose-roll-position": "Choose a drop off position",
+            "choose-roll-position-slider": "Use the slider to select the position for drop off",
             "die-not-on-magnet": "Nothing to roll on the magnet?",
+            "is-die-on-magnet": "Is the dice on the electromagnet?",
+            "yes-on-magnet": "Yes, it is",
+            "no-on-magnet": "No, it's on the ground",
+            "information": "Information",
+            "barrier-info": "There is an invisible barrier. The electromagnet cannot move across the safety area.",
+            "next": "Next",
             "to-move-controls": "Open move controls",
             "roll-the-die": "Roll the die!",
             "wait-for-result": "Waiting for your result...",
@@ -48,11 +56,18 @@
             "select-a-box": "Wähle deine Box",
             "wait-for-box": "Deine gewählte Box wird vorbereitet...",
             "box-already-in-use": "Die Box wird bereits von einem anderen Besucher verwendet. Bitte wähle eine andere.",
-            "before-start-pick": "Bevor du würfeln kannst musst du den Würfel aufheben.",
-            "before-start-magnet": "Du hast jetzt die Kontrolle über den Magneten.",
+            "start-pick-up": "Hebe den Würfel mit dem Elektromagnet auf",
+            "start-pick-up-info": "Du kannst den Elektromagnet mit den Pfeilen steuern",
             "ready-to-roll": "Bereit zum Würfeln!",
-            "choose-roll-position": "Wähle den Abwurfort!",
+            "choose-roll-position": "Wähle den Abwurfort",
+            "choose-roll-position-slider": "Verwende den Schieberegler um den Abwurfort festzulegen",
             "die-not-on-magnet": "Würfel nicht am Magnet?",
+            "is-die-on-magnet": "Befindet sich der Würfel am Elektromagnet?",
+            "yes-on-magnet": "Ja",
+            "no-on-magnet": "Nein, auf dem Boden",
+            "information": "Information",
+            "barrier-info": "Es gibt eine unsichtbare Barriere. Der Elektromagnet kann die Sicherheitszone nicht verlassen.",
+            "next": "Weiter",
             "to-move-controls": "Zur Steuerung",
             "roll-the-die": "Würfle!",
             "wait-for-result": "Warte auf das Ergebnis...",
@@ -150,6 +165,14 @@
             $scope.getUserModeReadyState = function (boxId) {
                 $http.get(apiUrl + 'boxes/' + boxId).then(function (data) {
                     var boxData = data.data;
+                    if (boxData.CurrentState == "ROLL" || boxData.CurrentState == "PICKUP_TAKEIMAGE" || boxData.CurrentState == "PICKUP_PICKUP") {
+                        currentElement.fadeOut(fadeInOutTime, function () {
+                            waitForUserModeReady = false;
+                            $('#magnetCheck').fadeIn(fadeInOutTime);
+                        });
+                        currentElement = $('#magnetCheck');
+                    }
+                    /*
                     if (boxData.CurrentState == "ROLL" || boxData.CurrentState == "PICKUP_TAKEIMAGE") {
                         $('#waitSpinner').fadeOut(fadeInOutTime, function () {
                             waitForUserModeReady = false;
@@ -161,7 +184,12 @@
                             waitForUserModeReady = false;
                             $('#rollControls').fadeIn(fadeInOutTime);
                         });
+                        // setTimeout(() => {
+                        //     var sliderTopElement = document.querySelector('#sliderTop');
+                        //     sliderTop = mdc.slider.MDCSlider.attachTo(sliderTopElement, {skipInitialUIUpdate: false});
+                        // }, 2500);
                     }
+                    */
                 });
             };
 
@@ -261,11 +289,12 @@
                         $http.get(apiUrl + 'boxes/' + selectedBox.Id).then(function (data) {
                             $scope.activeBox = data.data;
                             isInUserMode = true;
-                            $('#boxOverview').fadeOut(fadeInOutTime, function () {
+                            currentElement.fadeOut(fadeInOutTime, function () {
                                 $scope.waitText = $scope.texts["wait-for-box"];
                                 waitForUserModeReady = true;
                                 $('#waitSpinner').fadeIn(fadeInOutTime);
                             });
+                            currentElement = $('#waitSpinner');
                         });
                     })
                     .catch(function (e) {
@@ -307,17 +336,30 @@
                 $http.put(apiUrl + 'move/' + selectedBox.Id, { "direction": direction });
             };
 
+            $scope.switchToMoveInfo = function () {
+                currentElement.fadeOut(fadeInOutTime, function () {
+                    $('#moveInfo').fadeIn(fadeInOutTime);
+                });
+                currentElement = $('#moveInfo');
+            };
+
             $scope.switchToMoveControls = function () {
-                $('#rollControls').fadeOut(fadeInOutTime, function () {
+                currentElement.fadeOut(fadeInOutTime, function () {
                     $('#moveControls').fadeIn(fadeInOutTime);
                 });
+                currentElement = $('#moveControls');
             };
 
             $scope.switchToRollMode = function () {
                 attachSliders();
-                $('#moveControls').fadeOut(fadeInOutTime, function () {
+                currentElement.fadeOut(fadeInOutTime, function () {
                     $('#rollControls').fadeIn(fadeInOutTime);
                 });
+                currentElement = $('#rollControls');
+                // setTimeout(() => {
+                //     var sliderTopElement = document.querySelector('#sliderTop');
+                //     sliderTop = mdc.slider.MDCSlider.attachTo(sliderTopElement, {skipInitialUIUpdate: false});
+                // }, 2500);
             };
 
             $scope.rollDie = function () {
@@ -350,7 +392,8 @@
                     <div class="mdc-layout-grid__cell 
                             mdc-layout-grid__cell--span-4-desktop
                             mdc-layout-grid__cell--span-4-tablet
-                            mdc-layout-grid__cell--span-2-phone" ng-repeat="box in boxes" ng-click="selectBox(box)">
+                            mdc-layout-grid__cell--span-2-phone
+                            tor-noSelect" ng-repeat="box in boxes" ng-click="selectBox(box)">
                         <div class="mdc-card" ng-class="{'box-available': box.AllowUserMode == 1 && !box.isSelected && !box.UserModeActive == 1, 
                                    'box-disabled': box.AllowUserMode != 1 || box.UserModeActive == 1, 
                                    'box-selected': box.isSelected}">
@@ -358,6 +401,7 @@
                                 <div class="mdc-card__media mdc-card__media--square"
                                     style="background-image: url('assets/pics/{{box.Latin}}.jpg');">
                                 </div>
+                                <div class="mdc-card__ripple"></div>
                             </div>
                         </div>
                     </div>
@@ -377,9 +421,34 @@
             </div>
             <div class="bottom-spaceholer"></div>
         </div>
+        <div id="magnetCheck">
+            <h2 class="section-headline">{{texts["is-die-on-magnet"]}}</h2>
+            <div class="tor-illu">
+                <img src="assets/illustration/illu_magnet_dice.svg" alt="cursor">
+            </div>
+            <button class="mdc-fab mdc-fab--extended tor-btn-second" ng-click="switchToRollMode()">
+                <div class="mdc-fab__ripple"></div>
+                <span class="mdc-fab__label">{{texts["yes-on-magnet"]}}</span>
+            </button>
+            <button class="mdc-fab mdc-fab--extended tor-btn-first" ng-click="switchToMoveInfo()">
+                <div class="mdc-fab__ripple"></div>
+                <span class="mdc-fab__label">{{texts["no-on-magnet"]}}</span>
+            </button>
+        </div>
+        <div id="moveInfo">
+            <h2 class="section-headline">{{texts["information"]}}</h2>
+            <h5 class="section-subline">{{texts["barrier-info"]}}</h5>
+            <div class="tor-illu">
+                <img src="assets/illustration/info_barrier.svg" alt="cursor">
+            </div>
+            <button class="mdc-fab mdc-fab--extended tor-btn-single" ng-click="switchToMoveControls()">
+                <div class="mdc-fab__ripple"></div>
+                <span class="mdc-fab__label">{{texts["next"]}}</span>
+            </button>
+        </div>
         <div id="moveControls">
-            <h2 class="section-headline">{{texts["before-start-pick"]}}</h2>
-            <h5 class="section-subline">{{texts["before-start-magnet"]}}</h5>
+            <h2 class="section-headline">{{texts["start-pick-up"]}}</h2>
+            <h5 class="section-subline">{{texts["start-pick-up-info"]}}</h5>
             <div style="padding-top: 20px;" class="control-area">
                 <div>
                     <div style="float: left" class="control-container">
@@ -443,23 +512,25 @@
         </div>
         <div id="rollControls">
             <h2 class="section-headline">{{texts["choose-roll-position"]}}</h2>
+            <h5 class="section-subline">{{texts["choose-roll-position-slider"]}}</h5>
             <div style="width: 85%; max-width: 700px; margin: auto; padding-top: 35px;">
                 <div id="rollControlsLeft" style="width: 100%">
-                    <div id="sliderTop" class="mdc-slider" tabindex="0" role="slider" aria-valuemin="0"
-                        aria-valuemax="100" aria-valuenow="50" aria-disabled="false" aria-label="Select Value">
-                        <div class="mdc-slider__track-container">
-                            <div class="mdc-slider__track"></div>
+                    <div id="sliderTop" class="mdc-slider">
+                        <input class="mdc-slider__input" type="range" min="0" max="100" value="0" name="position"
+                            aria-label="Select value">
+                        <div class="mdc-slider__track">
+                            <div class="mdc-slider__track--inactive"></div>
+                            <div class="mdc-slider__track--active">
+                                <div class="mdc-slider__track--active_fill"></div>
+                            </div>
                         </div>
-                        <div class="mdc-slider__thumb-container">
-                            <svg class="mdc-slider__thumb" width="21" height="21">
-                                <circle cx="10.5" cy="10.5" r="7.875"></circle>
-                            </svg>
-                            <div class="mdc-slider__focus-ring"></div>
+                        <div class="mdc-slider__thumb">
+                            <div class="mdc-slider__thumb-knob"></div>
                         </div>
                     </div>
                 </div>
-                <div style="margin-top: 50px;" class="roll-illu">
-                    <img src="assets/illustration/slider_cube_1.png" alt="cursor" class="roll-illu-img">
+                <div class="tor-illu">
+                    <img src="assets/illustration/illu_drop_the_dice.svg" alt="cursor">
                 </div>
             </div>
             <div class="option-pickup">
@@ -509,32 +580,34 @@
             <div class="bottom-spaceholer"></div>
         </div>
     </div>
-    <script src="https://unpkg.com/material-components-web@7.0.0/dist/material-components-web.min.js"></script>
+    <script src="https://unpkg.com/material-components-web@14.0.0/dist/material-components-web.min.js"></script>
     <script src="index.js"></script>
     <script type="text/javascript">
-        var buttons = document.querySelectorAll('.mdc-button, .mdc-fab .mdc-card__primary-action');
-        for (var i = 0, button; button = buttons[i]; i++) {
-            mdc.ripple.MDCRipple.attachTo(button);
-        }
 
         $('.roll-button-start').hide();
         $('.move-button-cancel').hide();
-        var sliderTopElement;
         var sliderTop;
+        var snackAlreadyInUse;
 
         setTimeout(() => {
-            setTimeout(() => {
-                sliderTopElement = document.querySelector('#sliderTop');
-                sliderTop = mdc.slider.MDCSlider.attachTo(sliderTopElement);
-                $('#rollControls').hide();
-                $('.roll-button-start').show();
-                $('.move-button-cancel').show();
-            }, 500);
-        }, 500);
+            var buttons = document.querySelectorAll('.mdc-button, .mdc-fab, .mdc-card.box-available > .mdc-card__primary-action');
+            for (var i = 0, button; button = buttons[i]; i++) {
+                mdc.ripple.MDCRipple.attachTo(button);
+            }
+            
+            snackAlreadyInUse = mdc.snackbar.MDCSnackbar.attachTo(document.querySelector('#mdc-snackbar-already-in-use'));
 
-        var snackAlreadyInUse = mdc.snackbar.MDCSnackbar.attachTo(document.querySelector('#mdc-snackbar-already-in-use'));
+            var sliderTopElement = document.querySelector('#sliderTop');
+            sliderTop = mdc.slider.MDCSlider.attachTo(sliderTopElement, {skipInitialUIUpdate: false});
+            $('#rollControls').hide();
+            $('.roll-button-start').show();
+            $('.move-button-cancel').show();
+        }, 250);
 
+        var currentElement = $('#boxOverview');
         //$('#boxOverview').hide();
+        $('#magnetCheck').hide();
+        $('#moveInfo').hide();
         $('#moveControls').hide();
         $('#waitSpinner').hide();
         $('#congrats').hide();

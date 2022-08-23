@@ -1,0 +1,24 @@
+@use '@material/button/mdc-button';
+@use '@material/button';
+@use "@material/card";
+@use "@material/fab";
+@use "@material/icon-button/icon-button";
+@use "@material/image-list/mdc-image-list";
+@use "@material/layout-grid/mdc-layout-grid";
+@use "@material/ripple";
+@use "@material/slider/styles";
+@use "@material/snackbar/mdc-snackbar";
+@use "@material/typography/mdc-typography";
+
+
+@include card.core-styles;
+@include fab.core-styles;
+@include icon-button.core-styles;
+
+.mdc-fab {
+    @include fab.container-color(primary);
+}
+
+.mdc-fab--extended {
+    @include fab.extended-shape-radius(10px, false);
+}

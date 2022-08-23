@@ -14,3 +14,11 @@
 @include card.core-styles;
 @include fab.core-styles;
 @include icon-button.core-styles;
+
+.mdc-fab {
+    @include fab.container-color(primary);
+}
+
+.mdc-fab--extended {
+    @include fab.extended-shape-radius(10px, false);
+}

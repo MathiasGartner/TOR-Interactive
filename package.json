@@ -13,6 +13,7 @@
     "@material/ripple": "^14.0.0",
     "@material/slider": "^14.0.0",
     "@material/snackbar": "^14.0.0",
+    "@material/theme": "^14.0.0",
     "@material/typography": "^14.0.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
@@ -33,7 +34,8 @@
   },
   "scripts": {
     "start": "node app.js",
-    "build": "webpack && cp ./dist/*.css ./public/css/"
+    "build": "webpack --mode=production && cp ./dist/*.css ./public/css/",
+    "dev": "webpack --mode=development && cp ./dist/*.css ./public/css/"
   },
   "repository": {
     "type": "git",

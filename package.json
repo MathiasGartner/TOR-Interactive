@@ -35,7 +35,8 @@
   "scripts": {
     "start": "node app.js",
     "build": "webpack --mode=production && cp ./dist/*.css ./public/css/",
-    "dev": "webpack --mode=development && cp ./dist/*.css ./public/css/"
+    "dev": "webpack --mode=development && cp ./dist/*.css ./public/css/",
+    "dev-win": "webpack --mode=development && copy .\\dist\\*.css .\\public\\css\\"
   },
   "repository": {
     "type": "git",

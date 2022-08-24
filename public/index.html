@@ -39,12 +39,14 @@
             "barrier-info": "There is an invisible barrier. The electromagnet cannot move across the safety area.",
             "next": "Next",
             "to-move-controls": "Open move controls",
-            "roll-the-die": "Roll the die!",
+            "roll-the-die": "Drop the dice",
             "wait-for-result": "Waiting for your result...",
             "great-default": "Thank you for your random number. It will be part of our calculations.",
             "great-result_p1": "Great,\nyou rolled a ",
             "great-result_p2": "!",
-            "choose-another-box": "Choose another box!",
+            "choose-another-box": "Yeah, I wanna roll again",
+            "i-am-finished": "Thank you, I am finished",
+            "back": "back",
             "result-1": "one",
             "result-2": "two",
             "result-3": "three",
@@ -74,7 +76,9 @@
             "great-default": "Danke für diese Zufallszahl.",
             "great-result_p1": "Super,\ndu hast einen\n",
             "great-result_p2": "\ngewürfelt!",
-            "choose-another-box": "Wähle eine andere Box!",
+            "choose-another-box": "Ja, ich will nochmal würfeln",
+            "i-am-finished": "Danke, vielleicht später",
+            "back": "zurück",
             "result-1": "Einser",
             "result-2": "Zweier",
             "result-3": "Dreier",
@@ -309,7 +313,7 @@
                 if (sendExit) {
                     $scope.sendMoveCommand("EXIT");
                 }
-                $('#moveControls, #rollControls, #waitSpinner, #congrats').fadeOut(fadeInOutTime, function () {
+                $('#magnetCheck, #moveInfo, #moveControls, #rollControls, #waitSpinner, #congrats').fadeOut(fadeInOutTime, function () {
                     isInUserMode = false;
                     $scope.showStartButton = false;
                     waitForUserModeReady = false;
@@ -386,7 +390,7 @@
 <body class="mdc-typography" ng-controller="TORController" ng-cloak>
     <div style="max-width: 800px; margin: auto; margin-top: 20px;">
         <div id="boxOverview">
-            <h2 class="section-headline">{{texts["select-a-box"]}}</h2>
+            <h2 class="tor-section-headline">{{texts["select-a-box"]}}</h2>
             <div class="mdc-layout-grid">
                 <div class="mdc-layout-grid__inner">
                     <div class="mdc-layout-grid__cell 
@@ -394,9 +398,9 @@
                             mdc-layout-grid__cell--span-4-tablet
                             mdc-layout-grid__cell--span-2-phone
                             tor-noSelect" ng-repeat="box in boxes" ng-click="selectBox(box)">
-                        <div class="mdc-card" ng-class="{'box-available': box.AllowUserMode == 1 && !box.isSelected && !box.UserModeActive == 1, 
-                                   'box-disabled': box.AllowUserMode != 1 || box.UserModeActive == 1, 
-                                   'box-selected': box.isSelected}">
+                        <div class="mdc-card" ng-class="{'tor-box-available': box.AllowUserMode == 1 && !box.isSelected && !box.UserModeActive == 1, 
+                                   'tor-box-disabled': box.AllowUserMode != 1 || box.UserModeActive == 1, 
+                                   'tor-box-selected': box.isSelected}">
                             <div class="mdc-card__primary-action">
                                 <div class="mdc-card__media mdc-card__media--square"
                                     style="background-image: url('assets/pics/{{box.Latin}}.jpg');">
@@ -407,7 +411,7 @@
                     </div>
                 </div>
             </div>
-            <button class="mdc-fab mdc-fab--extended box-button-start" ng-show="showStartButton"
+            <button class="mdc-fab mdc-fab--extended tor-btn-single" ng-show="showStartButton"
                 ng-click="switchToUserMode()">
                 <div class="mdc-fab__ripple"></div>
                 <span class="mdc-fab__label">Start</span>
@@ -419,10 +423,10 @@
                     </div>
                 </div>
             </div>
-            <div class="bottom-spaceholer"></div>
+            <div class="tor-bottom-spaceholer"></div>
         </div>
         <div id="magnetCheck">
-            <h2 class="section-headline">{{texts["is-die-on-magnet"]}}</h2>
+            <h2 class="tor-section-headline">{{texts["is-die-on-magnet"]}}</h2>
             <div class="tor-illu">
                 <img src="assets/illustration/illu_magnet_dice.svg" alt="cursor">
             </div>
@@ -436,8 +440,8 @@
             </button>
         </div>
         <div id="moveInfo">
-            <h2 class="section-headline">{{texts["information"]}}</h2>
-            <h5 class="section-subline">{{texts["barrier-info"]}}</h5>
+            <h2 class="tor-section-headline">{{texts["information"]}}</h2>
+            <h5 class="tor-section-subline">{{texts["barrier-info"]}}</h5>
             <div class="tor-illu">
                 <img src="assets/illustration/info_barrier.svg" alt="cursor">
             </div>
@@ -447,42 +451,42 @@
             </button>
         </div>
         <div id="moveControls">
-            <h2 class="section-headline">{{texts["start-pick-up"]}}</h2>
-            <h5 class="section-subline">{{texts["start-pick-up-info"]}}</h5>
-            <div style="padding-top: 20px;" class="control-area">
+            <h2 class="tor-section-headline">{{texts["start-pick-up"]}}</h2>
+            <h5 class="tor-section-subline">{{texts["start-pick-up-info"]}}</h5>
+            <div style="padding-top: 20px;" class="tor-control-area">
                 <div>
-                    <div style="float: left" class="control-container">
+                    <div style="float: left" class="tor-control-container">
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <button class="mdc-icon-button material-icons control-button-back"
+                            <button class="mdc-icon-button material-icons tor-control-button-back"
                                 on-long-press="startMoveCommand('BACK')"
                                 on-touch-end="endMoveCommand('BACK')">keyboard_arrow_up</button>
                         </div>
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <button class="mdc-icon-button material-icons control-button-left"
+                            <button class="mdc-icon-button material-icons tor-control-button-left"
                                 on-long-press="startMoveCommand('LEFT')"
                                 on-touch-end="endMoveCommand('LEFT')">keyboard_arrow_left</button>
-                            <button class="mdc-icon-button material-icons control-button-dummy"
+                            <button class="mdc-icon-button material-icons tor-control-button-dummy"
                                 style="visibility: hidden;">arrow_drop_up</button>
-                            <button class="mdc-icon-button material-icons control-button-right"
+                            <button class="mdc-icon-button material-icons tor-control-button-right"
                                 on-long-press="startMoveCommand('RIGHT')"
                                 on-touch-end="endMoveCommand('RIGHT')">keyboard_arrow_right</button>
                         </div>
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <button class="mdc-icon-button material-icons control-button-front"
+                            <button class="mdc-icon-button material-icons tor-control-button-front"
                                 on-long-press="startMoveCommand('FRONT')"
                                 on-touch-end="endMoveCommand('FRONT')">keyboard_arrow_down</button>
                         </div>
                     </div>
-                    <div style="padding-top: 9px; float: left" class="control-container">
+                    <div style="padding-top: 9px; float: left" class="tor-control-container">
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <button class="mdc-icon-button material-icons control-button-up"
+                            <button class="mdc-icon-button material-icons tor-control-button-up"
                                 on-long-press="startMoveCommand('UP')"
                                 on-touch-end="endMoveCommand('UP')">keyboard_arrow_up</button>
                         </div>
                         <div style="height:20px">
                         </div>
                         <div style="display: flex; justify-content: center; align-items: center;">
-                            <button class="mdc-icon-button material-icons control-button-down"
+                            <button class="mdc-icon-button material-icons tor-control-button-down"
                                 on-long-press="startMoveCommand('DOWN')"
                                 on-touch-end="endMoveCommand('DOWN')">keyboard_arrow_down</button>
                         </div>
@@ -491,7 +495,7 @@
                 <div style="clear:both">
                 </div>
                 <div style="margin-top: 50px;">
-                    <div style="float: left;" class="control-illu">
+                    <div style="float: left;" class="tor-illu-control">
                         <img src="assets/illustration/cursor.png" alt="cursor" class="control-illu-img">
                     </div>
                     <div class="control-illu">
@@ -499,21 +503,21 @@
                     </div>
                 </div>
             </div>
-            <button class="mdc-fab mdc-fab--extended move-button-ready" ng-click="switchToRollMode()">
+            <button class="mdc-fab mdc-fab--extended tor-btn-single" ng-click="switchToRollMode()">
                 <div class="mdc-fab__ripple"></div>
                 <span class="mdc-fab__label">{{texts["ready-to-roll"]}}</span>
             </button>
-            <button class="mdc-fab mdc-fab--mini move-button-cancel" ng-click="restart()">
+            <button class="mdc-fab mdc-fab--mini tor-move-button-cancel" ng-click="restart()">
                 <div class="mdc-fab__ripple"></div>
-                <i class="material-icons mdc-button__icon move-button-cancel-icon" aria-hidden="true">
+                <i class="material-icons mdc-button__icon tor-move-button-cancel-icon" aria-hidden="true">
                     close</i>
             </button>
-            <div class="bottom-spaceholer"></div>
+            <div class="tor-bottom-spaceholer"></div>
         </div>
         <div id="rollControls">
-            <h2 class="section-headline">{{texts["choose-roll-position"]}}</h2>
-            <h5 class="section-subline">{{texts["choose-roll-position-slider"]}}</h5>
-            <div style="width: 85%; max-width: 700px; margin: auto; padding-top: 35px;">
+            <h2 class="tor-section-headline">{{texts["choose-roll-position"]}}</h2>
+            <h5 class="tor-section-subline">{{texts["choose-roll-position-slider"]}}</h5>
+            <div style="max-width: 700px; margin: auto; padding-top: 35px;">
                 <div id="rollControlsLeft" style="width: 100%">
                     <div id="sliderTop" class="mdc-slider">
                         <input class="mdc-slider__input" type="range" min="0" max="100" value="0" name="position"
@@ -533,7 +537,21 @@
                     <img src="assets/illustration/illu_drop_the_dice.svg" alt="cursor">
                 </div>
             </div>
-            <div class="option-pickup">
+            <button class="mdc-fab mdc-fab--extended tor-btn-second" ng-click="rollDie()">
+                <div class="mdc-fab__ripple"></div>
+                <span class="mdc-fab__label">{{texts["roll-the-die"]}}</span>
+            </button>
+            <button class="mdc-fab mdc-fab--extended tor-btn-first" ng-click="switchToMoveControls()">
+                <div class="mdc-fab__ripple"></div>
+                <span class="mdc-fab__label">{{texts["back"]}}</span>
+            </button>
+            <button class="mdc-fab mdc-fab--mini tor-move-button-cancel" ng-click="restart()">
+                <div class="mdc-fab__ripple"></div>
+                <i class="material-icons mdc-button__icon tor-move-button-cancel-icon" aria-hidden="true">
+                    close</i>
+            </button>
+            
+            <!-- <div class="option-pickup">
                 <div>
                     <span style="font-size: 14">
                         {{texts["die-not-on-magnet"]}}
@@ -546,38 +564,43 @@
             </div>
             <div style="clear: both;">
             </div>
-            <button class="mdc-fab mdc-fab--extended roll-button-start" ng-click="rollDie()">
+            <button class="mdc-fab mdc-fab--extended tor-btn-single" ng-click="rollDie()">
                 <div class="mdc-fab__ripple"></div>
                 <span class="mdc-fab__label">{{texts["roll-the-die"]}}</span>
             </button>
-            <button class="mdc-fab mdc-fab--mini move-button-cancel" ng-click="restart()">
+            <button class="mdc-fab mdc-fab--mini tor-move-button-cancel" ng-click="restart()">
                 <div class="mdc-fab__ripple"></div>
-                <i class="material-icons mdc-button__icon move-button-cancel-icon" aria-hidden="true">
+                <i class="material-icons mdc-button__icon tor-move-button-cancel-icon" aria-hidden="true">
                     close</i>
             </button>
-            <div class="bottom-spaceholer"></div>
+             -->
+            <div class="tor-bottom-spaceholer"></div>
         </div>
         <div id="waitSpinner">
-            <h2 class="section-headline">{{waitText}}</h2>
+            <h2 class="tor-section-headline">{{waitText}}</h2>
             <div style="display: flex; justify-content: center; align-items: center; margin-top: 70px;">
                 <img src="assets/Ripple-1.1s-197px.svg">
             </div>
-            <div class="bottom-spaceholer"></div>
+            <div class="tor-bottom-spaceholer"></div>
         </div>
         <div id="congrats">
             <div style="margin-top: 120px">
-                <h1 class="congrats">
+                <h1 class="tor-congrats">
                     {{congratsText}}
                 </h1>
             </div>
             <div style="margin-top: 50px;" class="roll-illu">
                 <img ng-src="assets/illustration/result-{{rollResult}}.png" alt="result" class="result-illu-img">
             </div>
-            <button class="mdc-fab mdc-fab--extended congrats-button-restart" ng-click="restart()">
+            <button class="mdc-fab mdc-fab--extended tor-btn-second" ng-click="restart()">
                 <div class="mdc-fab__ripple"></div>
                 <span class="mdc-fab__label">{{texts["choose-another-box"]}}</span>
             </button>
-            <div class="bottom-spaceholer"></div>
+            <button class="mdc-fab mdc-fab--extended tor-btn-first" ng-click="restart()">
+                <div class="mdc-fab__ripple"></div>
+                <span class="mdc-fab__label">{{texts["i-am-finished"]}}</span>
+            </button>
+            <div class="tor-bottom-spaceholer"></div>
         </div>
     </div>
     <script src="https://unpkg.com/material-components-web@14.0.0/dist/material-components-web.min.js"></script>
@@ -585,12 +608,12 @@
     <script type="text/javascript">
 
         $('.roll-button-start').hide();
-        $('.move-button-cancel').hide();
+        $('.tor-move-button-cancel').hide();
         var sliderTop;
         var snackAlreadyInUse;
 
         setTimeout(() => {
-            var buttons = document.querySelectorAll('.mdc-button, .mdc-fab, .mdc-card.box-available > .mdc-card__primary-action');
+            var buttons = document.querySelectorAll('.mdc-button, .mdc-fab, .mdc-card.tor-box-available > .mdc-card__primary-action');
             for (var i = 0, button; button = buttons[i]; i++) {
                 mdc.ripple.MDCRipple.attachTo(button);
             }
@@ -601,8 +624,8 @@
             sliderTop = mdc.slider.MDCSlider.attachTo(sliderTopElement, {skipInitialUIUpdate: false});
             $('#rollControls').hide();
             $('.roll-button-start').show();
-            $('.move-button-cancel').show();
-        }, 250);
+            $('.tor-move-button-cancel').show();
+        }, 50);
 
         var currentElement = $('#boxOverview');
         //$('#boxOverview').hide();

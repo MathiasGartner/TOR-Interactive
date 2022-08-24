@@ -109,8 +109,8 @@
         var torApp = angular.module('TOR-Interactive', []);
 
         //disable context menu (activated on longpress)
-        window.oncontextmenu = function () { 
-            return false; 
+        window.oncontextmenu = function () {
+            return false;
         }
         //see https://stackoverflow.com/questions/37809294/how-to-handle-long-click-event-in-angular-for-mobile
         //see https://codepen.io/ptongalex/pen/LZNgGZ
@@ -384,11 +384,11 @@
 
             $scope.switchToRollMode = function () {
                 currentElement.fadeOut(fadeInOutTime, function () {
-                    $('#rollControls').fadeIn(fadeInOutTime, function() {
+                    $('#rollControls').fadeIn(fadeInOutTime, function () {
                         var slider = attachSlider();
                         slider.setValue(0);
                         console.log('slider: ' + slider);
-                    });                    
+                    });
                 });
                 previousElement = currentElement;
                 currentElement = $('#rollControls');
@@ -488,37 +488,49 @@
                     <div style="float: left" class="tor-control-container">
                         <div class="tor-control-arrow">
                             <button class="mdc-icon-button material-icons tor-control-button-back tor-no-select"
-                                on-long-press="startMoveCommand('BACK')"
-                                on-touch-end="endMoveCommand('BACK')">arrow_circle_up</button>
+                                on-long-press="startMoveCommand('BACK')" on-touch-end="endMoveCommand('BACK')">
+                                <div class="mdc-icon-button__ripple"></div>
+                                arrow_circle_up
+                            </button>
                         </div>
                         <div class="tor-control-arrow">
                             <button class="mdc-icon-button material-icons tor-control-button-left"
-                                on-long-press="startMoveCommand('LEFT')"
-                                on-touch-end="endMoveCommand('LEFT')">arrow_circle_up</button>
+                                on-long-press="startMoveCommand('LEFT')" on-touch-end="endMoveCommand('LEFT')">
+                                <div class="mdc-icon-button__ripple"></div>
+                                arrow_circle_up
+                            </button>
                             <button class="mdc-icon-button material-icons tor-control-button-dummy"
                                 style="visibility: hidden;">arrow_drop_up</button>
                             <button class="mdc-icon-button material-icons tor-control-button-right"
-                                on-long-press="startMoveCommand('RIGHT')"
-                                on-touch-end="endMoveCommand('RIGHT')">arrow_circle_up</button>
+                                on-long-press="startMoveCommand('RIGHT')" on-touch-end="endMoveCommand('RIGHT')">
+                                <div class="mdc-icon-button__ripple"></div>
+                                arrow_circle_up
+                            </button>
                         </div>
                         <div class="tor-control-arrow">
                             <button class="mdc-icon-button material-icons tor-control-button-front"
-                                on-long-press="startMoveCommand('FRONT')"
-                                on-touch-end="endMoveCommand('FRONT')">arrow_circle_down</button>
+                                on-long-press="startMoveCommand('FRONT')" on-touch-end="endMoveCommand('FRONT')">
+                                <div class="mdc-icon-button__ripple"></div>
+                                arrow_circle_down
+                            </button>
                         </div>
                     </div>
                     <div style="padding-top: 9px; float: left" class="tor-control-container">
                         <div class="tor-control-arrow">
                             <button class="mdc-icon-button material-icons tor-control-button-up"
-                                on-long-press="startMoveCommand('UP')"
-                                on-touch-end="endMoveCommand('UP')">arrow_circle_up</button>
+                                on-long-press="startMoveCommand('UP')" on-touch-end="endMoveCommand('UP')">
+                                <div class="mdc-icon-button__ripple"></div>
+                                arrow_circle_up
+                            </button>
                         </div>
                         <div style="height:20px">
                         </div>
                         <div class="tor-control-arrow">
                             <button class="mdc-icon-button material-icons tor-control-button-down"
-                                on-long-press="startMoveCommand('DOWN')"
-                                on-touch-end="endMoveCommand('DOWN')">arrow_circle_down</button>
+                                on-long-press="startMoveCommand('DOWN')" on-touch-end="endMoveCommand('DOWN')">
+                                <div class="mdc-icon-button__ripple"></div>
+                                arrow_circle_down
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -625,6 +637,11 @@
             var buttons = document.querySelectorAll('.mdc-button, .mdc-fab, .mdc-card.tor-box-available > .mdc-card__primary-action');
             for (var i = 0, button; button = buttons[i]; i++) {
                 mdc.ripple.MDCRipple.attachTo(button);
+            }
+            var iconButtons = document.querySelectorAll('.mdc-icon-button');
+            for (var i = 0, iconButtons; iconButtons = iconButtons[i]; i++) {
+                var ripple = mdc.ripple.MDCRipple.attachTo(iconButtons);
+                ripple.unbounded = true;
             }
 
             snackAlreadyInUse = mdc.snackbar.MDCSnackbar.attachTo(document.querySelector('#mdc-snackbar-already-in-use'));

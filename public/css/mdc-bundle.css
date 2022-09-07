@@ -3741,3 +3741,7 @@ svg.mdc-button__icon {
 .mdc-fab--extended .mdc-fab__ripple {
   border-radius: 10px;
 }
+
+.mdc-button {
+  height: 36px;
+}

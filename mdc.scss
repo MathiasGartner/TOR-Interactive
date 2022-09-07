@@ -3,13 +3,13 @@
 @use "@material/card";
 @use "@material/fab";
 @use "@material/icon-button/icon-button";
+//@use "@material/icon-button";
 @use "@material/image-list/mdc-image-list";
 @use "@material/layout-grid/mdc-layout-grid";
 @use "@material/ripple";
 @use "@material/slider/styles";
 @use "@material/snackbar/mdc-snackbar";
 @use "@material/typography/mdc-typography";
-
 
 @include card.core-styles;
 @include fab.core-styles;
@@ -22,3 +22,11 @@
 .mdc-fab--extended {
     @include fab.extended-shape-radius(10px, false);
 }
+
+.mdc-button {
+    @include button.height(36px);
+}
+
+// .mdc-icon-button{
+//     @include icon-button.size(50px);
+// }

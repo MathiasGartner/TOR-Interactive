@@ -121,8 +121,7 @@
                     $elm.bind('touchstart', function (evt) {
                         // Locally scoped variable that will keep track of the long press
                         $scope.longPress = true;
-                        console.log("touchstart.longPress: " + $scope.longPress);
-
+                        //console.log("touchstart.longPress: " + $scope.longPress);
                         // We'll set a timeout for 600 ms for a long press
                         $timeout(function () {
                             if ($scope.longPress) {
@@ -138,7 +137,7 @@
                     $elm.bind('touchend', function (evt) {
                         // Prevent the onLongPress event from firing
                         $scope.longPress = false;
-                        console.log("touchend.longPress: " + $scope.longPress);
+                        //console.log("touchend.longPress: " + $scope.longPress);
                         // If there is an on-touch-end function attached to this element, apply it
                         if ($attrs.onTouchEnd) {
                             $scope.$apply(function () {
@@ -334,15 +333,16 @@
 
             var promise;
             $scope.startMoveCommand = function (direction) {
+                $interval.cancel(promise);
                 promise = $interval(function () {
                     $scope.sendMoveCommand(direction);
                 }, moveControlTimeInterval);                
-                console.log("startMoveCommand");
+                //console.log("startMoveCommand");
             };
 
             $scope.endMoveCommand = function () {
                 $interval.cancel(promise);
-                console.log("endMoveCommand");
+                //console.log("endMoveCommand");
             };
 
             $scope.sendMoveCommand = function (direction) {
@@ -445,7 +445,7 @@
             </div>
             <button class="mdc-button mdc-button--raised tor-btn-single" ng-show="showStartButton"
                 ng-click="switchToUserMode()">
-                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__ripple"></span>
                 <span class="mdc-button__label">{{texts["start"]}}</span>
             </button>
             <aside id="mdc-snackbar-already-in-use" class="mdc-snackbar">
@@ -463,11 +463,11 @@
                 <img src="assets/illustration/illu_magnet_dice.svg" alt="cursor">
             </div>
             <button class="mdc-button mdc-button--raised tor-btn-second" ng-click="switchToRollMode()">
-                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__ripple"></span>
                 <span class="mdc-button__label">{{texts["yes-on-magnet"]}}</span>
             </button>
             <button class="mdc-button mdc-button--raised tor-btn-first" ng-click="switchToMoveInfo()">
-                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__ripple"></span>
                 <span class="mdc-button__label">{{texts["no-on-magnet"]}}</span>
             </button>
         </div>
@@ -478,7 +478,7 @@
                 <img src="assets/illustration/info_barrier.svg" alt="cursor">
             </div>
             <button class="mdc-button mdc-button--raised tor-btn-single" ng-click="switchToMoveControls()">
-                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__ripple"></span>
                 <span class="mdc-button__label">{{texts["next"]}}</span>
             </button>
         </div>
@@ -548,11 +548,11 @@
                 </div>
             </div>
             <button class="mdc-button mdc-button--raised tor-btn-second" ng-click="switchToRollMode()">
-                <div class="mdc-button"></div>
+                <span class="mdc-button__ripple"></span>
                 <span class="mdc-button__label">{{texts["ready-to-roll"]}}</span>
             </button>
             <button class="mdc-button mdc-button--outlined tor-btn-first" ng-click="switchToMagnetCheck()">
-                <div class="mdc-button"></div>
+                <span class="mdc-button__ripple"></span>
                 <span class="mdc-button__label">{{texts["back"]}}</span>
             </button>
             <button class="mdc-fab mdc-fab--mini tor-move-button-cancel" ng-click="restart()">
@@ -618,11 +618,11 @@
                 <img ng-src="assets/illustration/result-{{rollResult}}.png" alt="result">
             </div>
             <button class="mdc-button mdc-button--raised tor-btn-second" ng-click="restart()">
-                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__ripple"></span>
                 <span class="mdc-button__label">{{texts["choose-another-box"]}}</span>
             </button>
             <button class="mdc-button mdc-button--outlined tor-btn-first" ng-click="restart()">
-                <div class="mdc-button__ripple"></div>
+                <span class="mdc-button__ripple"></span>
                 <span class="mdc-button__label">{{texts["i-am-finished"]}}</span>
             </button>
             <div class="tor-bottom-spaceholer-double-btn"></div>

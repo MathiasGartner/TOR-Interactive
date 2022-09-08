@@ -23,9 +23,9 @@
     <script>
         var userLang = navigator.language || navigator.userLanguage;
         var texts_en = {
-            "select-a-box": "Select your Box",
+            "select-a-box": "Select your box",
             "start": "Let's start",
-            "box-is-prepared": "Your box is being prepared for interaction",
+            "box-is-prepared": "Your box is prepared for interaction",
             "please-wait": "Please wait",
             "box-already-in-use": "Box already in use by another visitor. Please choose another one.",
             "start-pick-up": "Pick up the dice with the electromagnet",
@@ -38,7 +38,7 @@
             "yes-on-magnet": "Yes, it is",
             "no-on-magnet": "No, it's on the ground",
             "information": "Information",
-            "barrier-info": "There is an invisible barrier. The electromagnet cannot move across the safety area.",
+            "barrier-info": "There is an invisible barrier. The electromagnet can only move inside the safety area.",
             "next": "Next",
             "to-move-controls": "Open move controls",
             "roll-the-die": "Drop the dice",
@@ -47,7 +47,7 @@
             "great-result_p1": "Great,\nyou rolled a ",
             "great-result_p2": "!",
             "choose-another-box": "Yeah, I wanna roll again",
-            "i-am-finished": "Thank you, I am finished",
+            "i-am-finished": "Bye bye",
             "back": "back",
             "result-1": "one",
             "result-2": "two",
@@ -121,10 +121,10 @@
                     $elm.bind('touchstart', function (evt) {
                         // Locally scoped variable that will keep track of the long press
                         $scope.longPress = true;
+                        console.log("touchstart.longPress: " + $scope.longPress);
 
                         // We'll set a timeout for 600 ms for a long press
                         $timeout(function () {
-                            console.log("longPress: " + $scope.longPress);
                             if ($scope.longPress) {
                                 // If the touchend event hasn't fired,
                                 // apply the function given in on the element's on-long-press attribute
@@ -138,7 +138,7 @@
                     $elm.bind('touchend', function (evt) {
                         // Prevent the onLongPress event from firing
                         $scope.longPress = false;
-                        console.log("longPress: " + $scope.longPress);
+                        console.log("touchend.longPress: " + $scope.longPress);
                         // If there is an on-touch-end function attached to this element, apply it
                         if ($attrs.onTouchEnd) {
                             $scope.$apply(function () {
@@ -336,11 +336,13 @@
             $scope.startMoveCommand = function (direction) {
                 promise = $interval(function () {
                     $scope.sendMoveCommand(direction);
-                }, moveControlTimeInterval);
+                }, moveControlTimeInterval);                
+                console.log("startMoveCommand");
             };
 
             $scope.endMoveCommand = function () {
                 $interval.cancel(promise);
+                console.log("endMoveCommand");
             };
 
             $scope.sendMoveCommand = function (direction) {

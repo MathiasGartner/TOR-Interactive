@@ -1,6 +1,8 @@
 :root {
   --mdc-theme-primary: #5a1077;
   --mdc-theme-secondary: #288c78;
+  --tor-theme-primary-light: #8a41a7;
+  --tor-theme-primary-dark: #2c004a;
   --tor-body-margin: 8px;
   --tor-content-padding: 16px;
 }
@@ -65,7 +67,7 @@
 .tor-box-selected {
   box-shadow: 0px 0px 9px 4px rgba(10, 11, 12, 0.2);
   border-style: solid;
-  border-color: var(--mdc-theme-primary);
+  border-color: var(--tor-theme-primary-light);
   border-width: 2px;
   transform: scale(1.04);
 }

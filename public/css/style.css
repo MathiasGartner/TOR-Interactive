@@ -21,11 +21,11 @@
   outline: none !important;
 }
 
-.tor-bottom-spaceholer-single-btn {
+.tor-bottom-spaceholder-single-btn {
   min-height: calc(48px + 36px + 16px);
 }
 
-.tor-bottom-spaceholer-double-btn {
+.tor-bottom-spaceholder-double-btn {
   min-height: calc(108px + 36px + 16px);
 }
 

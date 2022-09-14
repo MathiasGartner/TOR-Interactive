@@ -8,7 +8,7 @@ const Box = function(box) {
   };
   
 Box.getAll = result => {
-    sql.query('SELECT Id, Material, Position, Latin, AllowUserMode, UserModeActive, CurrentState ' + 
+    sql.query('SELECT Id, Material, Position, Latin, CASE WHEN (AllowUserMode + IsActive) = 2 THEN 1 ELSE 0 END as AllowUserMode, UserModeActive, CurrentState ' + 
               'FROM client WHERE Position IS NOT NULL ORDER BY Position', (err, res) => {
       if (err) {
         console.log("error: ", err);
@@ -22,7 +22,7 @@ Box.getAll = result => {
 };
   
 Box.findById = (clientId, result) => {
-    sql.query('SELECT Id, Material, Position, Latin, AllowUserMode, UserModeActive, CurrentState ' + 
+    sql.query('SELECT Id, Material, Position, Latin, CASE WHEN (AllowUserMode + IsActive) = 2 THEN 1 ELSE 0 END as AllowUserMode, UserModeActive, CurrentState ' + 
               'FROM client WHERE id = ?',
               [clientId],
               (err, res) => {

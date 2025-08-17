@@ -23,6 +23,8 @@
     <script>
         var userLang = navigator.language || navigator.userLanguage;
         var texts_en = {
+            "on-pause-headline": "Please wait",
+            "on-pause-text": "The Transparency of Randomness is currently on pause. It will be available again in a few minutes.",
             "select-a-box": "Select your box",
             "start": "Let's start",
             "box-is-prepared": "Your box is prepared for interaction",
@@ -57,6 +59,8 @@
             "result-6": "six",
         };
         var texts_de = {
+            "on-pause-headline": "Bitte warten",
+            "on-pause-text": "The Transparency of Randomness ist derzeit pausiert. Die Steuerung wird in wenigen Minuten wieder aktiviert.",
             "select-a-box": "Wähle deine Box",
             "start": "Start",
             "box-is-prepared": "Deine gewählte Box wird vorbereitet",
@@ -93,6 +97,7 @@
         //var apiUrl = "http://193.171.203.63/";
         var apiUrl = "";
         var isInUserMode = false;
+        var isPaused = false;
         var selectedBox;
         var fadeInOutTime = 750;
         var refreshTimeReloadBoxes = 2000000;
@@ -116,7 +121,7 @@
         //see https://codepen.io/ptongalex/pen/LZNgGZ
         torApp.directive('onLongPress', function ($timeout) {
             return {
-                restrict: 'A',
+                restrict: 'A', // 'A': attribute directive
                 link: function ($scope, $elm, $attrs) {
                     $elm.bind('touchstart', function (evt) {
                         // Locally scoped variable that will keep track of the long press
@@ -151,6 +156,10 @@
 
         function attachSlider() {
             return mdc.slider.MDCSlider.attachTo(document.querySelector('#sliderTop'), { skipInitialUIUpdate: false });
+        }
+
+        function refresh() {
+            window.location = window.location.href;
         }
 
         torApp.controller('TORController', function ($scope, $http, $interval) {
@@ -320,6 +329,7 @@
                 if (sendExit) {
                     $scope.sendMoveCommand("EXIT");
                 }
+                $scope.checkSchedule(false);
                 $('#magnetCheck, #moveInfo, #moveControls, #rollControls, #waitSpinner, #congrats').fadeOut(fadeInOutTime, function () {
                     isInUserMode = false;
                     $scope.showStartButton = false;
@@ -327,7 +337,15 @@
                     waitForRollFinish = false;
                     $interval.cancel(waitForRollFinishPromise);
                     $scope.reloadBoxes();
-                    $('#boxOverview').fadeIn(fadeInOutTime);
+                    if (isPaused) {
+                        $('#paused').fadeIn(fadeInOutTime);
+                        setInterval('refresh()', 5000);
+                    }
+                    else {
+                        $('#boxOverview').fadeIn(fadeInOutTime);
+                        previousElement = null;
+                        currentElement = $('#boxOverview');
+                    }
                 });
             };
 
@@ -415,12 +433,36 @@
                         });
                     });
             };
+
+            $scope.checkSchedule = function (show) {
+                console.log('checking schedule...');
+                $http.get(apiUrl + 'schedule').then(function (data) {
+                    isPaused = data.data.ScheduleOn == 0;
+                    if (show) {
+                        if (isPaused) {
+                            $('#boxOverview').hide();
+                            setInterval('refresh()', 5000);
+                        }
+                        else {            
+                            $('#paused').hide();
+                            currentElement = $('#boxOverview');
+                            previousElement = null;
+                        }
+                    }
+                });
+            };
+
+            $scope.checkSchedule(true);
         });
     </script>
 </head>
 
 <body class="mdc-typography" ng-controller="TORController" ng-cloak>
     <div style="max-width: 800px; margin: auto; margin-top: 20px;">
+        <div id="paused">
+            <h2>{{texts["on-pause-headline"]}}</h2>
+            <h5 class="tor-section-subline">{{texts["on-pause-text"]}}</h5>
+        </div>
         <div id="boxOverview">
             <h2 class="tor-section-headline">{{texts["select-a-box"]}}</h2>
             <div class="mdc-layout-grid">
@@ -651,7 +693,6 @@
             attachSlider();
         }, 50);
 
-        //$('#boxOverview').hide();
         $('#magnetCheck').hide();
         $('#moveInfo').hide();
         $('#moveControls').hide();

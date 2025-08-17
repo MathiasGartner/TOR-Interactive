@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 require("./app/routes/box.routes.js")(app);
 require("./app/routes/move.routes.js")(app);
 require("./app/routes/roll.routes.js")(app);
+require("./app/routes/schedule.routes.js")(app);
 
 /*
 http.createServer(function (req, res) {

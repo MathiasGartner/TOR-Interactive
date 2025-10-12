@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 
 require("./app/routes/box.routes.js")(app);
+require("./app/routes/check.routes.js")(app);
 require("./app/routes/move.routes.js")(app);
 require("./app/routes/roll.routes.js")(app);
 require("./app/routes/schedule.routes.js")(app);

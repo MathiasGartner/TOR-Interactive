@@ -16,7 +16,7 @@ Box.getAll = result => {
       return;
     }
 
-    console.log("client: ", res);
+    //console.log("client: ", res);
     result(null, res);
   });
 };

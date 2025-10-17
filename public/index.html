@@ -94,6 +94,42 @@
             "result-5": "Fünfer",
             "result-6": "Sechser",
         };
+        var texts_tr = {
+            "on-pause-headline": "Lütfen bekleyin",
+            "on-pause-text": "The Transparency of Randomness şu anda duraklatıldı. Birkaç dakika içinde yeniden kullanılabilir olacak.",
+            "select-a-box": "Kutunu seç",
+            "start": "Hadi başlayalım",
+            "box-is-prepared": "Kutun etkileşim için hazır",
+            "please-wait": "Lütfen bekleyin",
+            "box-already-in-use": "Bu kutu şu anda başka bir ziyaretçi tarafından kullanılıyor. Lütfen başka bir kutu seçin.",
+            "start-pick-up": "Zarı elektromıknatısla kaldırın",
+            "start-pick-up-info": "Elektromıknatısı yön tuşlarıyla kontrol edebilirsiniz",
+            "ready-to-roll": "Atmaya hazır!",
+            "choose-roll-position": "Bırakma konumunu seçin",
+            "choose-roll-position-slider": "Kaydırıcıyı kullanarak bırakma konumunu ayarlayın",
+            "die-not-on-magnet": "Mıknatısın üstünde zar yok mu?",
+            "is-die-on-magnet": "Zar elektromıknatısın üzerinde mi?",
+            "yes-on-magnet": "Evet, üzerinde",
+            "no-on-magnet": "Hayır, yerde",
+            "information": "Bilgi",
+            "barrier-info": "Görünmez bir bariyer var. Elektromıknatıs yalnızca güvenli alan içinde hareket edebilir.",
+            "next": "İleri",
+            "to-move-controls": "Hareket kontrollerini aç",
+            "roll-the-die": "Zarı bırak",
+            "wait-for-result": "Sonucunuz analiz edilecek",
+            "great-default": "Rastgele sayınız için teşekkürler. Bu sayı hesaplamalarımızın bir parçası olacak.",
+            "great-result_p1": "Harika,\nattığınız sayı ",
+            "great-result_p2": "!",
+            "choose-another-box": "Evet, bir kez daha atmak istiyorum",
+            "i-am-finished": "Hoşça kal",
+            "back": "Geri",
+            "result-1": "bir",
+            "result-2": "iki",
+            "result-3": "üç",
+            "result-4": "dört",
+            "result-5": "beş",
+            "result-6": "altı",
+        };
         //var apiUrl = "http://193.171.203.63/";
         var apiUrl = "";
         var isInUserMode = false;
@@ -166,6 +202,9 @@
 
             if (userLang.startsWith('de')) {
                 $scope.texts = texts_de;
+            }
+            else if (userLang.startsWith('tr')) {
+                $scope.texts = texts_tr;
             }
             else {
                 $scope.texts = texts_en;

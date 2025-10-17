@@ -18,7 +18,10 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "request-ip": "^3.3.0",
+    "ua-parser-js": "^1.0.39",
+    "cookie-parser": "^1.4.6"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.8",

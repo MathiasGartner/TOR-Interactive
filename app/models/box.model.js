@@ -57,27 +57,35 @@ Box.enableUserMode = (id, result) => {
         return;
       }
 
-      sql.query(
-        "UPDATE client SET UserModeActive = 1 WHERE id = ? AND AllowUserMode and NOT UserModeActive; " + 
-        "INSERT INTO jobqueue (ClientId, JobCode, JobParameters) VALUES (?, ?, ?); ",
-        [id, id, "U", ""],
-        (err, res) => {
-          if (err) {
-            console.log("error: ", err);
-            result(null, err);
-            return;
+      sql.beginTransaction(err => {
+        if (err) return result(null, err);
+  
+        sql.query(
+          "UPDATE client SET UserModeActive = 1 WHERE id = ? AND AllowUserMode AND NOT UserModeActive",
+          [id],
+          (err, updateRes) => {
+            if (err) return sql.rollback(() => result(null, err));
+  
+            if (updateRes.affectedRows === 0)
+              return sql.rollback(() => result({ kind: "not_found" }, null));
+  
+            sql.query(
+              "INSERT INTO jobqueue (ClientId, JobCode, JobParameters) VALUES (?, ?, ?)",
+              [id, "U", ""],
+              (err, insertRes) => {
+                if (err) return sql.rollback(() => result(null, err));
+  
+                sql.commit(err => {
+                  if (err) return sql.rollback(() => result(null, err));
+  
+                  console.log("switched to usermode for boxId:", { id });
+                  result(null, { id });
+                });
+              }
+            );
           }
-
-          if (res[0].affectedRows == 0) {
-            console.log("could not switch to usermode for boxId: ", { id: id });
-            result({ kind: "not_found" }, null);
-            return;
-          }
-
-          console.log("switched to usermode for boxId: ", { id: id });
-          result(null, { id: id});
-        }
-      );
+        );
+      });
     }
   );
 };

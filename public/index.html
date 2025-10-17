@@ -362,12 +362,8 @@
                     .catch(function (e) {
                         console.log('Error: ', e);
                         snack = snackAlreadyInUse;
-                        if (e.response) {
-                            const status = e.response.status;
-                            const code = e.response.data?.code;
-                            if (code === 'not_available') {
-                                snack = snackNotAvailable;
-                            }
+                        if (e.data?.code === 'not_available') {
+                            snack = snackNotAvailable;
                         }
                         snack.open();
                         $scope.reloadBoxes();

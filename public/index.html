@@ -30,6 +30,7 @@
             "box-is-prepared": "Your box is prepared for interaction",
             "please-wait": "Please wait",
             "box-already-in-use": "Box already in use by another visitor. Please choose another one.",
+            "box-not-available": "Box is not available. Please choose another one.",
             "start-pick-up": "Pick up the dice with the electromagnet",
             "start-pick-up-info": "The electromagnet can be controlled by pressing the arrows",
             "ready-to-roll": "Ready to roll!",
@@ -66,6 +67,7 @@
             "box-is-prepared": "Deine gewählte Box wird vorbereitet",
             "please-wait": "Bitte warten",
             "box-already-in-use": "Die Box wird bereits von einem anderen Besucher verwendet. Bitte wähle eine andere.",
+            "box-not-available": "Die Box ist nicht verfügbar. Bitte wähle eine andere.",
             "start-pick-up": "Hebe den Würfel mit dem Elektromagnet auf",
             "start-pick-up-info": "Du kannst den Elektromagnet mit den Pfeilen steuern",
             "ready-to-roll": "Bereit zum Würfeln!",
@@ -102,6 +104,7 @@
             "box-is-prepared": "Kutun etkileşim için hazır",
             "please-wait": "Lütfen bekleyin",
             "box-already-in-use": "Bu kutu şu anda başka bir ziyaretçi tarafından kullanılıyor. Lütfen başka bir kutu seçin.",
+            "box-not-available": "Kutu mevcut değil. Lütfen başka bir kutu seçin.",
             "start-pick-up": "Zarı elektromıknatısla kaldırın",
             "start-pick-up-info": "Elektromıknatısı yön tuşlarıyla kontrol edebilirsiniz",
             "ready-to-roll": "Atmaya hazır!",
@@ -358,7 +361,15 @@
                     })
                     .catch(function (e) {
                         console.log('Error: ', e);
-                        snackAlreadyInUse.open();
+                        snack = snackAlreadyInUse;
+                        if (e.response) {
+                            const status = e.response.status;
+                            const code = e.response.data?.code;
+                            if (code === 'not_available') {
+                                snack = snackNotAvailable;
+                            }
+                        }
+                        snack.open();
                         $scope.reloadBoxes();
                         $scope.showStartButton = false;
                     });
@@ -533,6 +544,13 @@
                 <div class="mdc-snackbar__surface">
                     <div class="mdc-snackbar__label" role="status" aria-live="polite">
                         {{texts["box-already-in-use"]}}
+                    </div>
+                </div>
+            </aside>
+            <aside id="mdc-snackbar-not-available" class="mdc-snackbar">
+                <div class="mdc-snackbar__surface">
+                    <div class="mdc-snackbar__label" role="status" aria-live="polite">
+                        {{texts["box-not-available"]}}
                     </div>
                 </div>
             </aside>
@@ -713,6 +731,7 @@
     <script src="index.js"></script>
     <script type="text/javascript">
         var snackAlreadyInUse;
+        var snackNotAvailable;
         var currentElement = $('#boxOverview');
         var previousElement = null;
 
@@ -728,6 +747,7 @@
             }
 
             snackAlreadyInUse = mdc.snackbar.MDCSnackbar.attachTo(document.querySelector('#mdc-snackbar-already-in-use'));
+            snackNotAvailable = mdc.snackbar.MDCSnackbar.attachTo(document.querySelector('#mdc-snackbar-not-available'));
 
             attachSlider();
         }, 50);

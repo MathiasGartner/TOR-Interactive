@@ -43,16 +43,25 @@ exports.update = (req, res) => {
     req.params.boxId,
     (err, data) => {
       if (err) {
-        if (err.kind === "not_found") {
+        if (err.kind === "not_available") {
           res.status(404).send({
-            message: "Could not switch to user mode for Box with id " + req.params.boxId
+            message: "Could not switch to user mode for Box with id " + req.params.boxId,
+            code: "not_available"
+          });
+        }
+        else if (err.kind === "not_found") {
+          res.status(404).send({
+            message: "Could not switch to user mode for Box with id " + req.params.boxId,
+            code: "not_found"
           });
         } else {
           res.status(500).send({
-            message: "Error wwitching to user mode for Box with id " + req.params.boxId
+            message: "Error switching to user mode for Box with id " + req.params.boxId
           });
         }
-      } else res.send(data);
+      } else {
+        res.send(data)
+      };
     }
   );
 };

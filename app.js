@@ -20,57 +20,71 @@ app.use(bodyParser.urlencoded({ extended: false }));
 const MAX_COOKIE_AGE = 60 * 60 * 1000; // 1 hour
 
 app.use((req, res, next) => {
-    // Only log for root page
-    if (req.path === '/' && !req.cookies.firstVisitLogged) {
-        const ip = requestIp.getClientIp(req);
-        const parser = new UAParser(req.headers['user-agent']);
-        const ua = parser.getResult();
+  if (req.path === '/' && !req.cookies.firstVisitLogged) {
+    const ip = requestIp.getClientIp(req);
+    const parser = new UAParser(req.headers['user-agent']);
+    const ua = parser.getResult();
 
-        const query = "INSERT INTO interactivevisits (Ip, Browser, OS, Device, UserAgent) VALUES (?, ?, ?, ?, ?)";
-        
-        const values = [
-            ip,
-            ua.browser.name || '',
-            ua.os.name || '',
-            ua.device.type || 'desktop',
-            req.headers['user-agent'] || ''
-        ];
+    const query = "INSERT INTO interactivevisits (Ip, Browser, OS, Device, UserAgent) VALUES (?, ?, ?, ?, ?)";
+    const values = [
+      ip,
+      ua.browser.name || '',
+      ua.os.name || '',
+      ua.device.type || 'desktop',
+      req.headers['user-agent'] || ''
+    ];
 
-        sql.query(query, values, (err, result) => {
-            if (err) {
-                console.error('Failed to log client to database:', err);
-                console.log('client info:', values);
-                return;
-            }
-            const visitorId = result.insertId;
+    sql.query(query, values, (err, result) => {
+      if (err) {
+        console.error('Failed to log client to database:', err);
+        console.log('client info:', values);
+        return next(); // continue even if failed
+      }
 
-            // Set a cookie so we don’t log this client again
-            res.cookie('firstVisitLogged', '1', { maxAge: MAX_COOKIE_AGE });
-            res.cookie('visitorId', visitorId, { maxAge: MAX_COOKIE_AGE });
-        });
-    }
+      const visitorId = result.insertId;
+      console.log('New visitorId:', visitorId);
+
+      res.cookie('firstVisitLogged', '1', { maxAge: MAX_COOKIE_AGE, httpOnly: true });
+      res.cookie('visitorId', visitorId, { maxAge: MAX_COOKIE_AGE, httpOnly: true });
+
+      next();
+    });
+  } 
+  else {
     next();
+  }
 });
 
+
 app.use((req, res, next) => {
-    const visitorId = parseInt(req.cookies.visitorId, 10);
-  
-    if (Number.isInteger(visitorId)) {
-      const query = "INSERT INTO interactive_calls (VisitorId, Path, Method, Referrer) VALUES (?, ?, ?, ?)";
-      const values = [
-        visitorId,
-        req.originalUrl || req.path,
-        req.method,
-        req.get('Referer') || null
-      ];
-  
-      sql.query(query, values, (err) => {
-        if (err) {
-          console.warn('Page logging failed:', err.message);
-        }
-      });
-    }
-    next();
+  const visitorId = parseInt(req.cookies.visitorId, 10);
+  const shouldLog = (
+    req.path === '/' ||
+    req.path === '/index' ||
+    req.path.startsWith('/box') ||
+    req.path.startsWith('/check') ||
+    req.path.startsWith('/move') ||
+    req.path.startsWith('/roll') ||
+    req.path.startsWith('/schedule')
+  );
+
+
+  if (shouldLog && Number.isInteger(visitorId)) {
+    const query = "INSERT INTO interactivelog (VisitorId, Path, Method, Referrer) VALUES (?, ?, ?, ?)";
+    const values = [
+      visitorId,
+      req.originalUrl || req.path,
+      req.method,
+      req.get('Referer') || null
+    ];
+
+    sql.query(query, values, (err) => {
+      if (err) {
+        console.warn('Page logging failed:', err.message);
+      }
+    });
+  }
+  next();
 });
 
 app.use(express.static(path.join(__dirname, 'public')));

@@ -26,7 +26,7 @@ app.use((req, res, next) => {
         const parser = new UAParser(req.headers['user-agent']);
         const ua = parser.getResult();
 
-        const query = "INSERT INTO interactivelog (Ip, Browser, OS, Device, UserAgent) VALUES (?, ?, ?, ?, ?)";
+        const query = "INSERT INTO interactivevisits (Ip, Browser, OS, Device, UserAgent) VALUES (?, ?, ?, ?, ?)";
         
         const values = [
             ip,
@@ -40,11 +40,35 @@ app.use((req, res, next) => {
             if (err) {
                 console.error('Failed to log client to database:', err);
                 console.log('client info:', values);
+                return;
             }
-        });
+            const visitorId = result.insertId;
 
-        // Set a cookie so we don’t log this client again
-        res.cookie('firstVisitLogged', '1', { maxAge: MAX_COOKIE_AGE });
+            // Set a cookie so we don’t log this client again
+            res.cookie('firstVisitLogged', '1', { maxAge: MAX_COOKIE_AGE });
+            res.cookie('visitorId', visitorId, { maxAge: MAX_COOKIE_AGE });
+        });
+    }
+    next();
+});
+
+app.use((req, res, next) => {
+    const visitorId = parseInt(req.cookies.visitorId, 10);
+  
+    if (Number.isInteger(visitorId)) {
+      const query = "INSERT INTO interactive_calls (VisitorId, Path, Method, Referrer) VALUES (?, ?, ?, ?)";
+      const values = [
+        visitorId,
+        req.originalUrl || req.path,
+        req.method,
+        req.get('Referer') || null
+      ];
+  
+      sql.query(query, values, (err) => {
+        if (err) {
+          console.warn('Page logging failed:', err.message);
+        }
+      });
     }
     next();
 });
